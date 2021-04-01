@@ -1,0 +1,151 @@
+PostVis Admin - INSTALL.txt
+Version 1.3
+Written by Roger_Smith(rogersmith@lazytechs.com)
+-------------------------------------------------------------
+PostVis Admin is an Easy to use admin interface for Postfix and Amavis-New.  All settings are stored in SQL and are editable via a web interface.  
+
+Requirements:
+- Apache 1.3 or higher
+- PHP 4 
+- MySQL 4.1.3 or higher
+- PostFix 2.2.x or higher w/ MySQL support
+- Amavis-New w/ MySQL support
+- Spamassassin 3.x
+- Virus Scanner - Optional - (ClamAV Recommended, but many scanners work with Amavis-New)
+
+Recommended Software:
+- phpMyAdmin (Provides easy access to MySQL for quick editing of databases)
+
+Features Include:
+
+- SuperAdmin to manage server wide settings
+- Per domain Admin editing for
+- Amavis-New Policy creation and editing
+- Per user assignment of Amavis-New filtering policy
+- Mail History Viewing, Average Spam scores per domain tracking
+- Easy Database Cleanup and pruning
+
+
+INSTALLATION
+----------------------------------------------------------
+
+*Note: INSTALL document does not cover installing postfix and amavis-new for your particular distro or from source.  This will cover how to alter an exsisting installation
+
+MySQL Setup:
+
+1) Create a database for your mail server.  Use an easy to recognize name such as postfix
+
+2) Create an user that has read write access to the postfix database. Write these down, will be needed later.
+
+3) Import the mysql.sql file into your database.  This will create the required tables for the mail server, amavis-new, and the web interface. 
+
+****Currently PostVis Admin is written with MYSQLI_NUM for quicker MySQL queries, this requires that the tables match what is in the SQL file.  If extra fields are needed for other administration tools, you will want to add them at the end of the table. ****
+
+MySQL setup is now complete.
+
+
+PostFix Setup
+
+Follow the postfix setup at the following url:
+
+http://postfix.wiki.xs4all.nl/index.php?title=Virtual_Users_and_Domains_with_Courier-IMAP_and_MySQL
+
+You can skip the inital setup of mysql tables, this has been done in the mysql setup.
+
+
+Amavis-New Setup
+----------------------------------------------------------
+#NOTE: If you have a working Postfix/Amavis-New setup working, skip to step #3
+
+1)Edit your postfix main.cf (usually located /etc/postfix) Add the following line:
+
+content_filter = amavis:[127.0.0.1]:10024
+
+2) Edit your master.cf (usually located /etc/postfix) Add the following:
+
+amavis  unix    -       -       -       -       2       smtp
+        -o smtp_data_done_timeout=1200
+        -o smtp_send_xforward_command=yes
+        -o disable_dns_lookups=yes
+        -o max_use=20
+
+127.0.0.1:10025 inet n - - - - smtpd
+        -o content_filter=
+        -o local_recipient_maps=
+        -o relay_recipient_maps=
+        -o smtpd_restriction_classes=
+        -o smtpd_client_restrictions=
+        -o smtpd_helo_restrictions=
+        -o smtpd_sender_restrictions=
+        -o smtpd_recipient_restrictions=permit_mynetworks,reject
+        -o strict_rfc821_envelopes=yes
+        -o mynetworks=127.0.0.0/8
+        -o smtpd_error_sleep_time=0
+        -o smtpd_soft_error_limit=1001
+        -o smtpd_hard_error_limit=1001
+
+pre-cleanup unix n - - - 0 cleanup
+        -o virtual_alias_maps=
+        -o canonical_maps=
+        -o sender_canonical_maps=
+        -o recipient_canonical_maps=
+        -o masquerade_domains=
+
+
+2) edit the services on their approprate lines:
+
+smtp    inet    n       -       -       -       -       smtpd
+        -o cleanup_service_name=pre-cleanup
+
+cleanup   unix  n       -       -       -       0       cleanup
+        -o mime_header_checks=
+        -o nested_header_checks=
+        -o body_checks=
+        -o header_checks=
+
+
+3) Edit your amavis.conf (Debian users should add the following to the /etc/amavis/conf.d/50-user file)
+
+@lookup_sql_dsn = ( ['DBI:mysql:database=<DATABASE>;host=<HOST>', '<USERNAME>', '<PASSWORD>'] );
+@storage_sql_dsn = @lookup_sql_dsn;
+$banned_files_quarantine_method = 'sql:';
+$spam_quarantine_method         = 'sql:';
+
+3a) Make sure to edit the first line and change the <> tags to your information
+
+
+4) restart amavis and postfix and verify that they are still working by
+
+5) Optional: Set your default values for Amavis in your amavis.conf file(50-user for Debian).  If Amavis-new can not find valid rules for a domain in SQL, it will use the default values found in the conf file.
+
+
+PostVis Admin Setup(Web Interface)
+----------------------------------------------------------
+
+1) Copy the config.php.sample to config.php in the root directory.
+
+2) Edit the config.php file in the root directory and edit it to match your setup.
+
+3) Browse to the admin page by going to the following page in your web browser(Change domain.tld to your IP or hostname of the server): 
+
+http://domain.tld/admin/
+
+3a) Default username: admin 
+    Default password: admin
+
+4) Add the default domain by filling out the "Add domain form"
+
+5) Change the password for the admin by going to domain admins and editing the admin user
+
+Support/Questions/FAQ
+----------------------------------------------------------
+For questions or support issues please post in the forums on our sourceforge.net project page:
+
+http://sourceforge.net/projects/postvisadmin
+
+FAQ's - Check the README file
+
+More to come, please send feature request or any recommendation to the forums at the project page. 
+
+
+

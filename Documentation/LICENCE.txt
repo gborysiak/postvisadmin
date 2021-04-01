@@ -1,0 +1,3 @@
+# PostVis Admin 1.3
+
+PostVis Admin is released under the GPL.  A copy has been provided in the Documentation folder for your reading pleasure.

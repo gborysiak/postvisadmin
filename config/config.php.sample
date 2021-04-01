@@ -1,0 +1,115 @@
+<?php
+// PostVis Admin
+// Config.php - Written by rogersmith@lazytechs.com
+// Version 1.5
+
+// Database Information 
+
+$siteurl = "https://domain.tld/"; //Site URL, include the trailing /
+$sitepath = "/path/to/postvisadmin"; // System path to PostVis Admin
+$time_offset = date("Z")/60/60; //Get current timezone offset from server timezone setting.
+
+// Paths to Spamassassin Rule directories, separated by space.  Include the *.cf at the end to ensure it parses only rule cf files.
+$sa_rule_paths = "/etc/spamassassin/*.cf /usr/local/etc/mail/spamassassin/*.cf /etc/mail/spamassassin/*.cf /usr/local/share/spamassassin/*.cf  /usr/share/spamassassin/*.cf /var/lib/spamassassin/*/*/*.cf";
+
+$enable_status_checks = "yes"; // yes/no
+// Following Depend on $enable_status_checks variable setting
+$enable_postfix_test = "yes"; // Telnets into port 25 to validate service is running and responding
+$enable_amavis_test = "yes"; // Telnets into Amavis port specified below, must be accessable from server running PostVis Admin
+$enable_mysql_test = "yes"; // MySQL database must be accessable from server runnging PostVis Admin 
+$enable_clamav_test = "yes"; // Recommended if Clamav-Daemon is running on same server as PostVis Admin
+
+//How to encrypt password: md5-crypt/md5/SHA1/plain for EMAIL Authentication only.  Does Not affect Postvis Admin Login - Postvis Admin Login defaults to SHA1 encryption
+$password_encryption = "md5-crypt"; 
+
+$dbconfig = "mysqli"; // Supported mysqli(PHP5) and mysql(PHP4)
+
+$dbhost = 'localhost';  // Database Host to connect to
+$dbuser = 'postfix';  // Username that has access to your Postfix Database
+$dbpass = 'postfix';     // Password that has access to your Postfix Database
+
+// maildir structure 
+// 0 = /domain/user@domain   
+// 1 = /domain/user
+
+$postfixdatabase = 'postfix'; // Postfix Database
+
+$maildir_style = 0; 
+
+$default_aliases = '20'; // Default Number of Aliases
+$default_accounts = '20'; // Default Number of Accounts
+
+// NOTE: Depending on Dovecot Version/Courier Version, you may need to type in Quota in kbytes or Mbytes.  Please enter in default quota in the format that goes with your setup
+$default_quota = '50'; // Can be in Mbytes or kbytes Default 50 Mbytes.
+
+$admin_email = "sysadmin@domain.tld"; // Administrator Email Address
+$support_email = $admin_email; //Optional -- If same as $admin_email leave as is, other wise change
+
+
+
+// Amavis Information
+$amavisserver = "127.0.0.1"; // Change to IP address for amavis filtering server
+$service_port = "10024"; // Amavis port
+$policy_port = "9998"; // Typical port used in most setups for policy port, set to your configuration
+
+// Postfix Server information
+$postfix_server = "127.0.0.1"; // Used to check if port 25 is responding properly
+
+//Path to Clamwatch
+$clamwatch_path = $sitepath . "/admin/examples/clamwatch.pl";
+
+//Have PostVis Admin send welcome letter to create MailDir
+
+$maildir_create = "yes"; // Set to yes to have PostVis Admin send email address to setup the maildir
+
+$welcome_mail = "<html><body><font face='Arial, Helvetica, sans-serif'>Welcome to your new email account.  If you have any issues please contact our support team.<br /><br />Thanks<br /><a href='mailto:$admin_email'>$admin_email</a></font></body></html>";
+$welcome_mail_subject = "Welcome!";
+
+
+// ****************DO NOT EDIT BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING*****************//
+
+// Mail Log / Quantine Logs Queries ###### Normally Should not have to Edit ########
+// Queries are example queries provided by Amavis-New SQL documentation
+
+
+
+
+$query_clean = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE content='C' GROUP BY sender.domain ORDER by cnt DESC LIMIT 20";
+
+$query_spamavg = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE content='S' GROUP BY sender.domain ORDER BY cnt DESC LIMIT 20";
+
+$query_volume = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id GROUP BY sender.domain ORDER BY cnt DESC";
+
+$query_spam_count = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE content='S' GROUP BY sender.domain ORDER BY cnt DESC";
+
+$query_top_spam_scores = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id GROUP BY sender.domain ORDER BY bspam_level DESC";
+
+$query_latestmail = "SELECT  UNIX_TIMESTAMP()-msgs.time_num AS age, SUBSTRING(policy,1,2) as pb,   content AS c, dsn_sent as dsn, ds, bspam_level AS level, size,   SUBSTRING(sender.email,1,18) AS s,   SUBSTRING(recip.email,1,18)  AS r,   SUBSTRING(msgs.subject,1,10) AS subj   FROM msgs LEFT JOIN msgrcpt         ON msgs.mail_id=msgrcpt.mail_id             LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip  ON msgrcpt.rid=recip.id   WHERE content IS NOT NULL AND UNIX_TIMESTAMP()-msgs.time_num < 120   ORDER BY msgs.time_num DESC;";
+
+// Cleanup Queries -- 
+// Default Queries provided by Amavis SQL Documentation to tiddy up the SQL Tables that amavis uses
+
+$msgscleanup1 = "DELETE FROM msgs WHERE time_iso < now() - INTERVAL 1 hour AND content IS NULL;";
+$msgscleanup2 = "DELETE FROM maddr WHERE NOT EXISTS (SELECT 1 FROM msgs WHERE sid=id) AND NOT EXISTS (SELECT 1 FROM msgrcpt WHERE rid=id);";
+
+$quarantinecleanup = "DELETE FROM quarantine WHERE NOT EXISTS (SELECT 1 FROM msgs WHERE mail_id=quarantine.mail_id)"; 
+$quarantinecleanup2 = "DELETE FROM msgrcpt WHERE NOT EXISTS (SELECT 1 FROM msgs WHERE mail_id=msgrcpt.mail_id)";
+$quarantinecleanup3 = 'DELETE FROM msgs WHERE time_iso < now()- INTERVAL 14 day AND (content=\'V\' OR content=\'S\');';
+
+
+$awlcleanup1 = "DELETE FROM awl WHERE lastupdate <= DATE_SUB(SYSDATE(), INTERVAL 6 MONTH)";
+$awlcleanup2 = "DELETE FROM awl WHERE lastupdate <= DATE_SUB(SYSDATE(), INTERVAL 6 MONTH)";
+
+// Blacklist and Whitelist Queryies to display the lists
+
+$whitelist_query = "SELECT wblist.rid, wblist.sid, wblist.wb, mailaddr.email as sender, users.email as recipient FROM wblist LEFT JOIN mailaddr ON wblist.sid = mailaddr.id LEFT JOIN users ON wblist.rid = users.id WHERE wblist.wb = 'W'";
+$blacklist_query = "SELECT wblist.rid, wblist.sid, wblist.wb, mailaddr.email as sender, users.email as recipient FROM wblist LEFT JOIN mailaddr ON wblist.sid = mailaddr.id LEFT JOIN users ON wblist.rid = users.id WHERE wblist.wb = 'B'";
+$wb_query = "SELECT wblist.rid, wblist.sid, wblist.wb, mailaddr.email as sender, users.email as recipient FROM wblist LEFT JOIN mailaddr ON wblist.sid = mailaddr.id LEFT JOIN users ON wblist.rid = users.id";
+
+// Please do not remove the following line.
+
+$footer = "<center><div class='footer'>Powered by Postvis Admin 1.5</div></center>";
+
+$quarantine_query = "SELECT DISTINCT quarantine.mail_id, secret_id, rs, bspam_level, (UNIX_TIMESTAMP(time_iso) + (3600 * $time_offset)) AS time_iso, SUBSTRING(sender.email,1,35) AS sender, SUBSTRING(recipient.email,1,28) AS recipient, size, content AS quaratinefor, SUBSTRING( subject, 1, 25) AS subject FROM `quarantine` LEFT JOIN msgrcpt ON msgrcpt.mail_id = quarantine.mail_id LEFT JOIN msgs ON msgs.mail_id = quarantine.mail_id LEFT JOIN maddr AS recipient ON msgrcpt.rid = recipient.id LEFT JOIN maddr AS sender ON msgs.sid = sender.id WHERE msgrcpt.rs != 'R' AND msgrcpt.rs != 'D'";
+
+?>

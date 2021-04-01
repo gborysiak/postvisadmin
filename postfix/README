@@ -1,0 +1,96 @@
+#PostVis Admin 
+#Version: .5
+#Written by Roger_Smith
+#roger_smith@lazytechs.com
+#Webpage: http://postvisadmin.sourceforge.net/
+#Project Page: http://sourceforge.net/projects/postvisadmin/
+#
+#------------------------------------------------------------------------
+#DISCLAIMER:
+#
+#This software is concidered an alpha release.  There WILL be bugs, some features missing etc.
+#
+#Please post Feature Requests/Bugs etc. on web site.
+#
+########################################################################
+
+Installation: 
+
+------------------------------------------------------------------------
+
+Easy Postfix/Courier-IMAP or Dovecot Setup can be found here:
+
+http://postfix.wiki.xs4all.nl/index.php?title=Virtual_Users_and_Domains_with_Courier-IMAP_and_MySQL
+
+------------------------------------------------------------------------
+Postfix SQL Setup:
+
+1) Install Postfix
+
+2) Create Postfix Database and import postfix.sql
+
+3) Create user and password to access the postfix database.
+
+4) Add the following to the main.cf replacing <> tags with your information:
+
+----------------------------------------------------------------------------
+virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf
+virtual_gid_maps = static:<Postfix GroupID>
+virtual_mailbox_base = </path/to/mail/store>
+virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf
+virtual_mailbox_limit = 51200000
+virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf
+virtual_minimum_uid = <PostFix UserID>
+virtual_transport = virtual
+virtual_uid_maps = static:<PostFix UserID>
+---------------------------------------------------------------------------
+
+a) Can add the following for quota support:
+ 
+---------------------------------------------------------------------------
+virtual_create_maildirsize = yes
+virtual_mailbox_extended = yes
+virtual_mailbox_limit_maps = mysql:/etc/postfix/mysql_virtual_mailbox_limit_maps.cf
+virtual_mailbox_limit_override = yes
+virtual_maildir_limit_message = Sorry, the user's maildir has overdrawn his diskspace quota, please try again later.
+virtual_overquota_bounce = yes
+--------------------------------------------------------------------------
+
+######NOTE#######
+Make sure the directory supplied for the mysql files exsists so you can copy the files to that directory in step 5.
+#################
+
+
+5) Copy the supplied mysql* files to your directory you supplied above and edit to match your information 
+
+
+
+---------------------------------------------------------------------------
+Amavis-New Setup:
+
+1) Install Amavis-New and configure domain settings, postfix/amavis settings etc.
+
+2) Add the following lines to the BOTTOM of your configuration file, replace the <> tags with your information.
+	a) Debian users can add it to the /etc/amavis/conf.d/50-user file
+
+@lookup_sql_dsn = ( ['DBI:mysql:database=<database>;host=<host>', '<username>', '<password>'] );
+@storage_sql_dsn = @lookup_sql_dsn;
+$banned_files_quarantine_method = 'sql:';
+$spam_quarantine_method         = 'sql:';
+
+3) Amavis-New SQL dump found in sql folder.  Can import amavis.sql for default table structure.  
+
+4) Grant read/write privilages to the same username as used in the postfix setup.
+
+
+
+
+
+
+More Detailed Installation to be written in upcoming versions.
+
+
+
+
+
+

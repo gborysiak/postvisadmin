@@ -1,0 +1,131 @@
+<?php
+$time_offset = exec('date +%:::z'); //Get current timezone offset from server timezone setting.
+ require_once("../../config/config.php");
+require '../../check_login.php';
+
+if ($loggedin == 1 and $superadmin == 0) {
+	$url = $siteurl . "/index.php";
+	header('Location:'. $url);
+} elseif ($loggedin == 0) {
+	$url = $siteurl . "/login.php";
+	header('Location:'. $url);
+}
+
+require_once("../../functions.inc.php");
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script type="text/javascript">
+<!--
+function roll(obj, highlightcolor, textcolor){
+                obj.style.borderColor = highlightcolor;
+                //obj.style.color = textcolor;
+            }
+-->
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>PostVis Admin</title>
+<link href="../../style2.css" rel="stylesheet" type="text/css" /><style type="text/css">
+<!--
+body {
+	background-color: #003366;
+}
+.style6 {font-weight: bold}
+-->
+</style></head>
+
+<body>
+<table width="900" border="0" align="center" cellpadding="3" cellspacing="0" bgcolor="#FFFFFF">
+  <tr>
+    <td colspan="2" class="boldtext"><img src="../../images/postvisadmin.png" width="288" height="41" /></td>
+  </tr>
+  <tr>
+    <td width="160" class="text"><table width="100%" class="sample">
+      <tr>
+        <td  class="text">&nbsp;</td>
+      </tr>
+    </table></td>
+    <td width="728"><div id="title">
+      <table class='sample' width='100%'>
+        <tr>
+          <td class='text'>Help Documentation</td>
+        </tr>
+      </table>
+    </div></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <? include('../adminmenu.php'); ?>    </td>
+    <td valign="top" class="main"><div id="main">
+      <table width="100%" border="1" cellpadding="1" cellspacing="1" class="main">
+        <tr>
+          <td height="20" colspan="2" valign="top" background="../../images/butonbackground.jpg" class="text style6">Select Category</td>
+          </tr>
+        <tr>
+          <td width="21%" valign="top" class="text"><table width="100%" border="1" cellpadding="1" cellspacing="1" class="sample">
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="errortext"><a href="policies.php">Amavisd-New Policies</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="quarantine.php">Quarantine</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="domainmanagement.php">Domain Management</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="mailhistory.php">Mail History</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="maintainence.php">Maintenance</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="domainadmins.php">Domain Admins</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="bayes.php">Bayesian Filtering</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="awl.php">Auto-Whitelist</a></td>
+            </tr>
+            <tr class="main">
+              <td background="../../images/butonbackground.jpg" class="text"><a href="blwl.php">Blacklist/Whitelist </a></td>
+            </tr>
+          </table></td>
+          <td width="79%" valign="top" class="text"><p><strong>Quarantine</strong></p>
+            <p>PostVis Admin includes complete quarantine management as well. You can view the individual messages that got quarantined, and what rules it triggered.</p>
+            <p>You can release a message for one of your users by clicking on the &quot;Release&quot; link on the right. This is dependant on your amavisd-new configuration to have the AM.PDP policy bank active.</p>
+            Example Configuration:<br />
+            <br />
+/etc/amavis/conf.d/50-user (Ubuntu/Debian)
+<table width="100%" border="1" cellspacing="1" cellpadding="1">
+  <tr>
+    <td bgcolor="#CCCCCC"><span class="footertext">$inet_socket_port = [10024, 9998];<br />
+      $interface_policy{'9998'} = 'AM.PDP';<br />
+      $policy_bank{'AM.PDP'} = {<br />
+      protocol =&gt; 'AM.PDP',  # select Amavis policy delegation protocol<br />
+      };</span><br /></td>
+  </tr>
+</table>
+<p>This will make amavis listen on port 9998 for quarantine release requests requiring both the Mail_ID and the Secret_ID. This is done for security reasons. The Secret_ID is randomly generated by amavis and only way to get that key is to have access to the database. </p>
+<p>Make sure the line in the config.php for PostVis Admin also reflects the settings above</p>
+config.php<br />
+<table width="100%" border="1" cellspacing="1" cellpadding="1">
+  <tr>
+    <td bgcolor="#CCCCCC"><span class="footertext">$amavisserver = &quot;127.0.0.1&quot;; // Change to IP address for amavis filtering server<br />
+      $policy_port = &quot;9998&quot;; // Typical port used in most setups for policy port, set to your configuration</span><br /></td>
+  </tr>
+</table>
+<p>This will tell PostVis Admin how to connect to the policy port on your server. If you have amavis on a separate box, you will want to make sure that amavis is listening to the correct interface and that the server running PostVis Admin has privilages to access that port.</p></td>
+        </tr>
+      </table>
+      <br />
+    </div></td>
+  </tr>
+  <tr>
+    <td colspan="2"><?php echo $footer; ?></td>
+  </tr>
+</table>
+</body>
+
+</html>

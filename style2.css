@@ -1,0 +1,115 @@
+.text {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #000000;
+}
+
+.whitetext {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #FFFFFF;
+}
+.style5 {
+	font-family: Verdana;
+	font-size: 8.5px;
+	color: #000000;
+}
+.errortext {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #FF0000;
+}
+
+.greentext {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #000000;
+}
+table {
+	background-color: #FFFFFF;
+}
+
+body {
+	background-color: #003366;
+}
+
+table.sample td {
+	border-width: 1px 1px 1px 1px;
+	padding: 2px 2px 2px 2px;
+	border-style: solid solid solid solid;
+
+
+
+
+	-moz-border-radius: 0px 0px 0px 0px;
+	border-color: #EFEFF7;
+	
+	background-image: url(images/butonbackground.jpg);
+	
+}
+.boldtext {
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.boldwhitetext {
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color:#FFFFFF
+}
+
+table.main td {
+	border-width: 1px 1px 1px 1px;
+	padding: 2px 2px 2px 2px;
+	border-style: solid solid solid solid;
+
+
+
+
+	-moz-border-radius: 0px 0px 0px 0px;
+	border-color: #EFEFF7;
+	
+	
+}
+
+a:link {
+text-decoration:none;
+color:#2B72AC;
+}
+
+a:visited {
+text-decoration:none;
+color:#2B72AC;
+}
+
+a:hover {
+	text-decoration:underline;
+}.footertext {
+	font-family: Verdana;
+	font-size: 9px;
+	text-decoration: none;
+}
+table.admin td {
+
+	border-width: 1px 1px 1px 1px;
+	padding: 2px 2px 2px 2px;
+	border-style: solid solid solid solid;
+
+
+
+
+	-moz-border-radius: 0px 0px 0px 0px;
+	border-color: #EFEFF7;
+}
+.footer {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	color: #999999;
+}
+.whitefooter {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	color: #FFFFFF;
+}
