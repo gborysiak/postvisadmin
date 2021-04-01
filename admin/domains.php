@@ -60,7 +60,7 @@ function roll(obj, highlightcolor, textcolor){
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -259,7 +259,7 @@ if ($dbconfig == "mysqli") {
                   </form></td>
               </tr>
             </table>
-			<? } ?></td>
+			<?php } ?></td>
           <td width="53%" valign="top"><table width="95%" border="0" align="center" cellpadding="3" cellspacing="0" class="main">
             <tr>
               <td bgcolor="#003366" class="boldwhitetext">Add Domain: </td>

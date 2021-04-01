@@ -59,11 +59,11 @@ body {
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">      
       <div align="center" class="text"><span class="style6">Welcome <? echo $_SESSION['username']; ?>!</span><br />
           <strong>Current Date/Time:</strong> <? echo date("n/j/y g:iA"); ?>      </div>
-      <? if ($enable_status_checks == "yes") { ?>
+      <?php if ($enable_status_checks == "yes") { ?>
       <table width="45%" border="1" align="center" cellpadding="1" cellspacing="1" class="main">
         <tr>
           <td colspan="2" bgcolor="#003366" class="boldwhitetext"><div align="center">Service Status</div></td>
@@ -71,7 +71,7 @@ body {
         <tr>
           <td width="62%" background="../images/butonbackground.jpg" class="boldtext">Postfix Status:</td>
           <td width="38%" class="text"><div align="center">
-            <?
+            <?php
 if ($enable_postfix_test == "yes") {
 
 $service_check = servicecheck("postfix");
@@ -85,7 +85,7 @@ echo "Check Disabled";
         <tr>
           <td background="../images/butonbackground.jpg" class="boldtext">Amavis Status:</td>
           <td class="text"><div align="center">
-            <?
+            <?php
 
 if ($enable_amavis_test == "yes") {
 $service_check = servicecheck("amavis");
@@ -99,7 +99,7 @@ echo "Check Disabled";
         <tr>
           <td background="../images/butonbackground.jpg" class="boldtext">MySQL Status:</td>
           <td class="text"><div align="center">
-            <?
+            <?php
 if ($enable_mysql_test == "yes") {
 $service_check = servicecheck("mysql");
 echo $service_check;
@@ -112,7 +112,7 @@ echo "Check Disabled";
         <tr>
           <td background="../images/butonbackground.jpg" class="boldtext">ClamAV Status:</td>
           <td class="text"><div align="center">
-            <?
+            <?php
 
 if ($enable_clamav_test == "yes") {
 $service_check = servicecheck("clamd");
@@ -126,7 +126,7 @@ echo "Check Disabled";
           </div></td>
         </tr>
       </table>
-      <? } ?>
+      <?php } ?>
       <br />
       <table width="45%" border="1" align="center" cellpadding="1" cellspacing="1" class="main">
         <tr>
@@ -135,7 +135,7 @@ echo "Check Disabled";
         <tr>
           <td width="63%" background="../images/butonbackground.jpg" class="boldtext">Messages In Quarantine:</td>
           <td width="37%" class="text">
-<? if ($dbconfig == "mysqli") {
+<?php if ($dbconfig == "mysqli") {
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 		if ($results = $mysqli->query($quarantine_query)) {
 			$rowcount = $results->num_rows;
@@ -160,7 +160,7 @@ echo "Check Disabled";
         <tr>
           <td background="../images/butonbackground.jpg" class="boldtext">Active Email Addresses:</td>
           <td class="text">
-<?
+<?php
 if ($dbconfig == "mysqli") {
 	if ($results = $mysqli->query("SELECT * FROM users")) {		
           $rowcount = $results->num_rows;
@@ -182,7 +182,7 @@ if ($dbconfig == "mysqli") {
         </tr>
         <tr>
           <td background="../images/butonbackground.jpg" class="boldtext">Server Load:</td>
-          <td class="text"><? 
+          <td class="text"><?php 
 $load = explode(" ", exec("cat /proc/loadavg"));
 echo $load[0].'&nbsp;&nbsp;'.$load[1].'&nbsp;&nbsp;'.$load[2];
 

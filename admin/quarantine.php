@@ -61,7 +61,7 @@ $offset = ($pageNum - 1) * $rowsPerPage;
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
      <form id="form1" name="form1" method="GET" action="">
             <table align="center" border="0">
@@ -73,21 +73,21 @@ $offset = ($pageNum - 1) * $rowsPerPage;
 					<option value="sender">From:</option>
 					<option value="subject">Subject:</option>
 					</select>                </td>
-                <td ><input name="search" type="text" class="style5" value="<? if (isset($_GET['search'])) {echo $_GET['search'];}?>" /></td>
+                <td ><input name="search" type="text" class="style5" value="<?php if (isset($_GET['search'])) {echo $_GET['search'];}?>" /></td>
 				<td class="style5">Rows: 
 				<select  class="style5" name="rowsperpage">
-					<option value="20" <? if ($rowsPerPage=="20") { echo "selected"; } ?>>20</option>
-					<option value="40" <? if ($rowsPerPage=="40") { echo "selected"; } ?>>40</option>
-					<option value="60" <? if ($rowsPerPage=="60") { echo "selected"; } ?>>60</option>
-					<option value="80" <? if ($rowsPerPage=="80") { echo "selected"; } ?>>80</option>
-					<option value="100" <? if ($rowsPerPage=="100") { echo "selected"; } ?>>100</option>
+					<option value="20" <?php if ($rowsPerPage=="20") { echo "selected"; } ?>>20</option>
+					<option value="40" <?php if ($rowsPerPage=="40") { echo "selected"; } ?>>40</option>
+					<option value="60" <?php if ($rowsPerPage=="60") { echo "selected"; } ?>>60</option>
+					<option value="80" <?php if ($rowsPerPage=="80") { echo "selected"; } ?>>80</option>
+					<option value="100" <?php if ($rowsPerPage=="100") { echo "selected"; } ?>>100</option>
 				</select>				</td>
 				<td>
 				<input type="submit" name="submit" class="style5" id="submit" value="Search" /></td>
            	  <td>			  </tr>
             </table>
                     </form>
-			<?php 
+			<?php
 if (isset($_GET['mail_id'])) {
 	$mail_id = $_GET['mail_id'];
 	$secret_id = $_GET['secret_id'];
@@ -148,7 +148,7 @@ if (isset($error)) {
           <td width="10" bgcolor='#003366' class="whitefooter">Q</td>
 		  <td  width="50"bgcolor='#003366' class="whitefooter">Release</td>
         </tr>
-      <? 
+      <?php 
 if (isset($_GET['searchfield'])) {
 	$searchfield = $_GET['searchfield'];
 	$search = $_GET['search'];
@@ -239,7 +239,7 @@ $mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 	  ?>
 	  </tr>
 	  <tr><td colspan="7" bgcolor='#003366' class="whitefooter"><center>
-<?
+<?php
 $maxPage = ceil($numrows/$rowsPerPage);
 $self = $_SERVER['PHP_SELF'];
 

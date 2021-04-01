@@ -2,10 +2,10 @@
 require '../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {
-	$url = $siteurl . "/index.php";
+	$url = $siteurl . "index.php";
 	header('Location:'. $url);
 } elseif ($loggedin == 0) {
-	$url = $siteurl . "/login.php";
+	$url = $siteurl . "login.php";
 	header('Location:'. $url);
 } 
 require('../config/config.php'); ?>
@@ -16,6 +16,7 @@ require('../config/config.php'); ?>
 <title>PostVis Admin</title>
 <style type="text/css">
 <!--
+
 .style5 {font-family: Verdana; font-size: 9px; }
 -->
 </style>
@@ -52,7 +53,7 @@ function roll(obj, highlightcolor, textcolor){
       <table class='sample' width='100%'>
         <tr>
           <td class='text'>Policy Editor 
- <?
+ <?php
 
 
 
@@ -86,7 +87,7 @@ if (isset($_POST['addpolicy'])) {
 		if ($result = $mysqli->query($addpolicyquery)) {
 			$error = "<table width='100%' class='sample'><tr><td width='22'><img src='../images/ok.png' /></td><td class='text'>Policy Successfully Inserted: $policyname</td></tr></table>";
 		} else {
-	 	 echo '<font color="red">MySQL Error: ' . $mysqli->error() . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
+	 	 echo '<font color="red">MySQL Error: ' . $mysqli->error . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
 	 	} 
 	} else { 
 		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
@@ -103,7 +104,7 @@ if (isset($_POST['addpolicy'])) {
     </div></td>
   </tr>
   <tr>
-    <td valign="top">  <? include('adminmenu.php'); ?><br />    </td>
+    <td valign="top">  <?php include('adminmenu.php'); ?><br />    </td>
     <td valign="top" class="main"><div id="main">
       <form id="form1" name="form1" method="post" action="">
             <table width="100%" border="0" cellpadding="0" class="main">
@@ -114,7 +115,7 @@ if (isset($_POST['addpolicy'])) {
               </tr>
               <tr>
                 <td height="26"><div align="center">
-                  <?
+                  <?php
 
 // Print and Fill in Policy Drop Down Selector
 
@@ -123,7 +124,7 @@ if ($dbconfig == "mysqli") {
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 	if ($policyresults = $mysqli->query($policyquery)) {
 		echo '<select name="policy" class="style5" id="policy">';
-		while ($rowpolicy = $rows=$policyresults->fetch_array(MYSQLI_NUM)) {
+		while ($rowpolicy = $rows=$policyresults->fetch_array(MYSQLI_BOTH)) {
 			if (isset($_POST['policy'])) {
 				$policy = $_POST['policy'];
 				if ($policy == $rowpolicy[0]) {
@@ -168,7 +169,7 @@ if ($dbconfig == "mysqli") {
       </table>
       </form>          
       <br />
-      <?
+      <?php
 	  
 	  //Update Policy Query  
 	  
@@ -207,7 +208,7 @@ if ($dbconfig == "mysqli") {
   		if ($result = $mysqli->query($query)) {
 	  		echo "<table width='100%' class='sample'><tr><td width='22'><img src='../images/ok.png' /></td><td class='text'>Policy Successfully Updated</td></tr></table>";
 	    } else {
-	  		echo "<table width='100%'> class='sample'<tr><td width='22'><img src='../images/no.png' /></td><td>MySQL Error: " . $mysqli->error() . "</td></tr></table>";
+	  		echo "<table width='100%'> class='sample'<tr><td width='22'><img src='../images/no.png' /></td><td>MySQL Error: " . $mysqli->error . "</td></tr></table>";
 	   	}
 	} else { 
 		if ($result = mysql_query($query)) { 
@@ -218,7 +219,7 @@ if ($dbconfig == "mysqli") {
 	}
 }
 	  ?>
-	  <? 
+	  <?php
 	  if (isset($error)) {
 	  	echo $error;
 	  }
@@ -230,82 +231,82 @@ if ($dbconfig == "mysqli") {
 	$poilicyquery = "SELECT * FROM policy WHERE id = '" . $policy . "'";
 	if ($dbconfig == "mysqli") { 
 		$policyedit = $mysqli->query($poilicyquery);
-		$row_policy = $policyedit->fetch_array(MYSQLI_NUM);
+		$row_policy = $policyedit->fetch_array(MYSQLI_BOTH);
 	} else { 
 		$policyedit = mysql_query($poilicyquery);
-		$row_policy = mysql_fetch_array($policyedit, MYSQL_NUM);
+		$row_policy = mysql_fetch_array($policyedit, MYSQLI_BOTH);
 	}	  
 ?>
         <form id="form2" name="form2" method="post" action="">
           <table width="100%" border="0" cellpadding="0" class="admin">
             <tr>
               <td colspan="2" bgcolor="#003366" class="text"><div align="center" class="boldwhitetext"><strong>Policy Edit</strong>: <?php echo $row_policy[1]; ?>
-                  <input name="policyid" type="hidden" id="policyid" value="<?php echo $row_policy[0]; ?>" />
+                  <input name="policyid" type="hidden" id="policyid" value="<?php echo $row_policy["id"]; ?>" />
               </div>              </td>
             </tr>
             <tr>
               <td width="28%" background="../images/butonbackground.jpg" class="text">Policy Name </td>
-              <td width="72%"><input name="policy_name" type="text" class="style5" id="policy_name" value="<?php echo $row_policy[1]; ?>" /></td>
+              <td width="72%"><input name="policy_name" type="text" class="style5" id="policy_name" value="<?php echo $row_policy["policy_name"]; ?>" /></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Receive Spam </td>
               <td><select name="spam_lover" class="style5" id="spam_lover">
-                <option value="Y" <? if ($row_policy[3] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[3] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?phpif ($row_policy["spam_lover"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["spam_lover"] == "N") { echo "selected"; } ?>>No</option>
               </select>
                 <span class="text"><em>Bypass Spam Checks</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Receive Viruses </td>
               <td><select name="virus_lover" class="style5" id="virus_lover">
-                <option value="Y" <? if ($row_policy[2] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[2] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["virus_lover"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["virus_lover"] == "N") { echo "selected"; } ?>>No</option>
               </select> 
                 <span class="text"><em>Bypass Virus Checks (<span class="style6">NOT RECOMMENDED</span>)           </em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Receive Banned Files </td>
               <td><select name="banned_files_lover" class="style5" id="banned_files_lover">
-                <option value="Y" <? if ($row_policy[4] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[4]== "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["banned_files_lover"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["banned_files_lover"]== "N") { echo "selected"; } ?>>No</option>
               </select> 
                 <span class="text"><em>Bypass Banned File checks</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Receive Bad Header Emails </td>
               <td><select name="bad_header_lover" class="style5" id="bad_header_lover">
-                <option value="Y" <? if ($row_policy[5] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[5] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["bad_header_lover"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["bad_header_lover"] == "N") { echo "selected"; } ?>>No</option>
               </select> 
                 <span class="text"><em>Bypass Banned Header Checks</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Disable Virus Scan </td>
               <td><select name="bypass_virus_checks" class="style5" id="bypass_virus_checks">
-                <option value="Y" <? if ($row_policy[6] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[6] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["bypass_virus_checks"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["bypass_virus_checks"] == "N") { echo "selected"; } ?>>No</option>
               </select>
                 <span class="text"><em> (<span class="style6">NOT RECOMMENDED</span>)</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Disable Spam Filter </td>
               <td><select name="bypass_spam_checks" class="style5" id="bypass_spam_checks">
-                <option value="Y" <? if ($row_policy[7] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[7] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["bypass_spam_checks"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["bypass_spam_checks"] == "N") { echo "selected"; } ?>>No</option>
               </select></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Disable Banned File Filter </td>
               <td><select name="bypass_banned_checks" class="style5" id="bypass_banned_checks">
-                <option value="Y" <? if ($row_policy[8] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[8] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["bypass_banned_checks"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["bypass_banned_checks"] == "N") { echo "selected"; } ?>>No</option>
               </select></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Disable Bad Headers Filter </td>
               <td><select name="bypass_header_checks" class="style5" id="bypass_header_checks">
-                <option value="Y" <? if ($row_policy[9] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[9] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["bypass_header_checks"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["bypass_header_checks"] == "N") { echo "selected"; } ?>>No</option>
               </select></td>
             </tr>
             <tr>
@@ -313,39 +314,41 @@ if ($dbconfig == "mysqli") {
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Spam Tag Level </td>
-              <td><input name="spam_tag_level" type="text" class="style5" id="spam_tag_level" value="<?php echo $row_policy[15]; ?>" />
+              <td><input name="spam_tag_level" type="text" class="style5" id="spam_tag_level" value="<?php echo $row_policy["spam_tag_level"]; ?>" />
               <span class="text"><em>When to Rewrite the Headers </em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Rewrite Subject Level </td>
-              <td><input name="spam_tag2_level" type="text" class="style5" id="spam_tag2_level" value="<?php echo $row_policy[16]; ?>" />
+              <td><input name="spam_tag2_level" type="text" class="style5" id="spam_tag2_level" value="<?php echo $row_policy["spam_tag2_level"]; ?>" />
                 <span class="text"><em>Add Spam Tag in Subject Line</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Spam Quarantine Level</td>
-              <td><input name="spam_kill_level" type="text" class="style5" id="spam_kill_level" value="<?php echo $row_policy[17]; ?>" />
+              <td><input name="spam_kill_level" type="text" class="style5" id="spam_kill_level" value="<?php echo $row_policy["spam_kill_level"]; ?>" />
                 <span class="text"><em>Scores Higher will be Quarantined</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Spam DSN Cutoff Level </td>
-              <td><input name="spam_dsn_cutoff_level" type="text" class="style5" id="spam_dsn_cutoff_level" value="<?php echo $row_policy[18]; ?>" />
+              <td><input name="spam_dsn_cutoff_level" type="text" class="style5" id="spam_dsn_cutoff_level" value="<?php echo $row_policy["spam_dsn_cutoff_level"]; ?>" />
                 <span class="text"><em>Scores higher will be sent a DSN</em></span></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Spam Quarantine Cutoff Level</td>
-              <td><input name="spam_quarantine_cutoff_level" type="text" class="style5" id="spam_quarantine_cutoff_level" value="<?php echo $row_policy[19]; ?>" />
+              <td><input name="spam_quarantine_cutoff_level" type="text" class="style5" id="spam_quarantine_cutoff_level" value="<?php echo $row_policy["spam_quarantine_cutoff_level"]; ?>" />
                 <span class="text"><em>Scores higher will not be quarantined</em></span></td>
             </tr>
             <tr>
-              <td height="25" background="../images/butonbackground.jpg" class="text">Modiy Subject for Spam </td>
-              <td><select name="spam_modifies_subj" class="style5" id="spam_modifies_subj">
-                <option value="Y" <? if ($row_policy[10] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[10] == "N") { echo "selected"; } ?>>No</option>
-              </select></td>
+              <td height="25" background="../images/butonbackground.jpg" class="text">Modify Subject for Spam (disabled)</td>
+              <td>
+                <select name="spam_modifies_subj" class="style5" id="spam_modifies_subj">
+                <option value="Y" <?php if ($row_policy["spam_modifies_subj"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["spam_modifies_subj"] == "N") { echo "selected"; } ?>>No</option>
+              </select>
+              </td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Spam Subject Tag </td>
-              <td><input name="spam_subject_tag2" type="text" class="style5" id="spam_subject_tag2" value="<?php echo $row_policy[33]; ?>" /></td>
+              <td><input name="spam_subject_tag2" type="text" class="style5" id="spam_subject_tag2" value="<?php echo $row_policy["spam_subject_tag2"]; ?>" /></td>
             </tr>
             <tr>
               <td colspan="2" bgcolor="#003366" class="text"><div align="center" class="boldwhitetext">Misc Options</div></td>
@@ -354,30 +357,30 @@ if ($dbconfig == "mysqli") {
               <td background="../images/butonbackground.jpg" class="text">Warn Virus Recipient</td>
               <td><select name="warnvirusrecip" class="style5" id="warnvirusrecip">
                 <option>NA</option>
-                <option value="Y" <? if ($row_policy[24] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[24] == "N") { echo "selected"; } ?>>No</option>
-                                                        </select></td>
+                <option value="Y" <?php if ($row_policy["warnvirusrecip"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["warnvirusrecip"] == "N") { echo "selected"; } ?>>No</option>
+               </select></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Warn Banned File Recipient</td>
               <td><select name="warnbannedrecip" class="style5" id="warnbannedrecip">
                 <option>NA</option>
-                <option value="Y" <? if ($row_policy[25] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[25] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["warnbannedrecip"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["warnbannedrecip"] == "N") { echo "selected"; } ?>>No</option>
                             </select></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Warn Bad Header Recipient</td>
               <td><select name="warnbadheader" class="style5" id="warnbadheader">
                 <option>NA</option>
-                <option value="Y" <? if ($row_policy[26] == "Y") { echo "selected"; } ?>>Yes</option>
-                <option value="N" <? if ($row_policy[26] == "N") { echo "selected"; } ?>>No</option>
+                <option value="Y" <?php if ($row_policy["warnbadhrecip"] == "Y") { echo "selected"; } ?>>Yes</option>
+                <option value="N" <?php if ($row_policy["warnbadhrecip"] == "N") { echo "selected"; } ?>>No</option>
                             </select></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Message Size Limit</td>
               <td><label>
-                <input name="messagesizelimit" type="text" class="style5" id="messagesizelimit" value="<? echo $row_policy[34]; ?>" />
+                <input name="messagesizelimit" type="text" class="style5" id="messagesizelimit" value="<?php echo $row_policy["message_size_limit"]; ?>" />
                 <span class="text"><em>'0' to disable</em></span></label></td>
             </tr>
             <tr>
@@ -387,7 +390,7 @@ if ($dbconfig == "mysqli") {
             </tr>
           </table>
       </form>
-        <? 
+        <?php 
 		} else {
 	
 		 
@@ -513,22 +516,22 @@ if ($dbconfig == "mysqli") {
             <tr class="admin">
               <td background="../images/butonbackground.jpg" class="text">Warn Virus Recipient</td>
               <td><select name="warnvirusrecip" class="style5" id="warnvirusrecip">
-                  <option value="Y" <? if ($row_policy[24] == "Y") { echo "selected"; } ?>>Yes</option>
-                  <option value="N" <? if ($row_policy[24] == "N") { echo "selected"; } ?>>No</option>
+                  <option value="Y" >Yes</option>
+                  <option value="N" selected>No</option>
                             </select></td>
             </tr>
             <tr class="admin">
               <td background="../images/butonbackground.jpg" class="text">Warn Banned File Recipient</td>
               <td><select name="warnbannedrecip2" class="style5" id="warnbannedrecip2">
-                  <option value="Y" <? if ($row_policy[25] == "Y") { echo "selected"; } ?>>Yes</option>
-                  <option value="N" <? if ($row_policy[25] == "N") { echo "selected"; } ?>>No</option>
+                  <option value="Y">Yes</option>
+                  <option value="N" selected>No</option>
                             </select></td>
             </tr>
             <tr class="admin">
               <td background="../images/butonbackground.jpg" class="text">Warn Bad Header Recipient</td>
               <td><select name="warnbadheader2" class="style5" id="warnbadheader2">
-                  <option value="Y" <? if ($row_policy[26] == "Y") { echo "selected"; } ?>>Yes</option>
-                  <option value="N" <? if ($row_policy[26] == "N") { echo "selected"; } ?>>No</option>
+                  <option value="Y">Yes</option>
+                  <option value="N" selected>No</option>
                             </select></td>
             </tr>
             <tr class="admin">
@@ -546,7 +549,7 @@ if ($dbconfig == "mysqli") {
             </tr>
           </table>
       </form>
-        <? } ?>    </td>
+        <?php } ?>    </td>
   </tr>
   <tr>
     <td colspan="2"><?php echo $footer; ?></td>

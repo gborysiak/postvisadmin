@@ -103,7 +103,7 @@ function randomkey($length)
    $pattern = "1234567890abcdefghijklmnopqrstuvwxyz";
    for($i=0;$i<$length;$i++)
    {
-     $key .= $pattern{rand(0,35)};
+     $key .= $pattern[rand(0,35)];
    }
    return $key;
   }
@@ -116,7 +116,7 @@ class UserInfo
 {
 	var $user;
 	
-	function UserInfo()
+	function __construct()
 	{
 	$user = $_GET['username'];
 	$this->getuserinfo($user);
@@ -168,7 +168,7 @@ class AliasInfo
 {
 	var $address;
 	var $goto;
-	function AliasInfo()
+	function __construct()
 	{
 		if (isset($_POST['address'])) {
 			$address = $_POST['address'];
@@ -224,7 +224,7 @@ class DomainInfo
 {
 	var $domain;
 		
-	function DomainInfo()
+	function __construct()
 	{ 
 	$this->time = time();
     if (isset($_GET['domain'])) {

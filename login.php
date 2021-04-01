@@ -3,6 +3,8 @@
 require_once("config/config.php");
 require 'check_login.php';
 
+$error=NULL;
+
 if ($loggedin == 1 and $superadmin == 1) {
 	$url = $siteurl . "admin/index.php";
 	header('Location:'. $url);
@@ -126,13 +128,14 @@ if (isset($_POST['login'])) {
     </div></td>
   </tr>
   <tr>
-    <td valign="top">      <form id="form1" name="form1" method="post" action="">
-<? 
+    <td valign="top">  
+<?php 
 if (isset($error)) {
-	echo "<table class='sample' width=47% align='center'><td width='22'><img src='/images/no.png' /></td><td class='text'>$error</td></tr></table>";
+	echo "<table class='sample' width=47% align='center'><td width='22'><img src='images/no.png' /></td><td class='text'>$error</td></tr></table>";
 }
+?>    
+    <form id="form1" name="form1" method="post" action="">
 
-?>
         <table width="47%" border="0" align="center" class="main">
           <tr>
             <td colspan="2" background="images/butonbackground.jpg"><div align="center" class="text">Please Login </div></td>

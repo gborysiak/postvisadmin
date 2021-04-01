@@ -1,10 +1,10 @@
 <?php
 
- require_once("config/config.php");
+require_once("config/config.php");
 require 'check_login.php';
 
 if ($loggedin == 0) {
-	$url = $siteurl . "/login.php";
+	$url = $siteurl . "login.php";
 	header('Location:'. $url);
 }
 
@@ -76,7 +76,7 @@ $domaininfo = new DomainInfo();
         <tr>
           <td background="images/butonbackground.jpg" class="text">Messages in Quarantine: </td>
           <td class="text">
-<? 
+<php? 
 $domain = $_SESSION['domain'];
 $quarantine_query = $quarantine_query . " AND recipient.email like '%$domain'";
 if ($dbconfig == "mysqli") {
