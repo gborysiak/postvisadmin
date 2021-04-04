@@ -171,41 +171,87 @@ if ($dbconfig == "mysqli") {
       <br />
       <?php
 	  
-	  //Update Policy Query  
+      //Update Policy Query  
+      if (isset($_POST['spam_lover'])) {
+         $policyname = $_POST['policy_name'];
+         $spamlover = $_POST['spam_lover'];
+         $viruslover = $_POST['virus_lover'];
+         $bannedfileslover = $_POST['banned_files_lover'];
+         $badheaderlover = $_POST['bad_header_lover'];
+         $bypassvirusscan = $_POST['bypass_virus_checks'];
+         $bypassspamchecks = $_POST['bypass_spam_checks'];
+         $bypassbannedchecked = $_POST['bypass_banned_checks'];
+         $bypassheaderchecks = $_POST['bypass_header_checks'];
+         $spamtaglevel = $_POST['spam_tag_level'];
+         $spamtag2level = $_POST['spam_tag2_level'];
+         $spamkilllevel = $_POST['spam_kill_level'];
+         $spamdsncutofflevel = $_POST['spam_dsn_cutoff_level'];
+         $modifysubj = $_POST['spam_modifies_subj'];
+         $spamsubjecttag2 = $_POST['spam_subject_tag2'];
+         $policyid = $_POST['policyid'];
+         $spam_quarantine_cutoff_level = $_POST['spam_quarantine_cutoff_level'];
+         $messagesizelimit = $_POST['messagesizelimit'];
+         $warnvirusrecip = $_POST['warnvirusrecip'];
+         $warnbannedrecip = $_POST['warnbannedrecip'];
+         $warnbadheader = $_POST['warnbadheader'];
 	  
-	  
-	  
-	  if (isset($_POST['spam_lover'])) {
-	  	
-	  
-	  
-	  $policyname = $_POST['policy_name'];
-	  $spamlover = $_POST['spam_lover'];
-	  $viruslover = $_POST['virus_lover'];
-	  $bannedfileslover = $_POST['banned_files_lover'];
-	  $badheaderlover = $_POST['bad_header_lover'];
-	  $bypassvirusscan = $_POST['bypass_virus_checks'];
-	  $bypassspamchecks = $_POST['bypass_spam_checks'];
-	  $bypassbannedchecked = $_POST['bypass_banned_checks'];
-	  $bypassheaderchecks = $_POST['bypass_header_checks'];
-	  $spamtaglevel = $_POST['spam_tag_level'];
-	  $spamtag2level = $_POST['spam_tag2_level'];
-	  $spamkilllevel = $_POST['spam_kill_level'];
-	  $spamdsncutofflevel = $_POST['spam_dsn_cutoff_level'];
-	  $modifysubj = $_POST['spam_modifies_subj'];
-	  $spamsubjecttag2 = $_POST['spam_subject_tag2'];
-	  $policyid = $_POST['policyid'];
-	  $spam_quarantine_cutoff_level = $_POST['spam_quarantine_cutoff_level'];
-	  $messagesizelimit = $_POST['messagesizelimit'];
-	  $warnvirusrecip = $_POST['warnvirusrecip'];
-	  $warnbannedrecip = $_POST['warnbannedrecip'];
-	  $warnbadheader = $_POST['warnbadheader'];
-	  
-	  $query = "UPDATE policy SET policy_name='$policyname', spam_lover='$spamlover', virus_lover='$viruslover', banned_files_lover='$bannedfileslover', bypass_virus_checks='$bypassvirusscan', bypass_spam_checks='$bypassspamchecks', bypass_header_checks='$bypassheaderchecks', spam_tag_level='$spamtaglevel', spam_tag2_level='$spamtag2level', spam_kill_level='$spamkilllevel', spam_dsn_cutoff_level='$spamdsncutofflevel' , spam_quarantine_cutoff_level = '$spam_quarantine_cutoff_level' , message_size_limit = '$messagesizelimit', warnvirusrecip = '$warnvirusrecip' , warnbannedrecip = '$warnbannedrecip' , warnbadhrecip = '$warnbadheader' , spam_modifies_subj='$modifysubj' , spam_subject_tag2='$spamsubjecttag2', bad_header_lover='$badheaderlover', bypass_banned_checks='$bypassbannedchecked' WHERE id = '$policyid'";
-	  
+         /*
+         $query = "UPDATE policy 
+            SET policy_name='$policyname', 
+            spam_lover='$spamlover', 
+            virus_lover='$viruslover', 
+            banned_files_lover='$bannedfileslover', 
+            bypass_virus_checks='$bypassvirusscan', 
+            bypass_spam_checks='$bypassspamchecks', 
+            bypass_header_checks='$bypassheaderchecks', 
+            spam_tag_level='$spamtaglevel', 
+            spam_tag2_level='$spamtag2level', 
+            spam_kill_level='$spamkilllevel', 
+            spam_dsn_cutoff_level='$spamdsncutofflevel', 
+            spam_quarantine_cutoff_level = '$spam_quarantine_cutoff_level' , 
+            message_size_limit = '$messagesizelimit', 
+            warnvirusrecip = '$warnvirusrecip' , 
+            warnbannedrecip = '$warnbannedrecip' , 
+            warnbadhrecip = '$warnbadheader' , 
+            spam_modifies_subj='$modifysubj' , 
+            spam_subject_tag2='$spamsubjecttag2', 
+            bad_header_lover='$badheaderlover', 
+            bypass_banned_checks='$bypassbannedchecked' 
+            WHERE id = '$policyid'";
+         */
+         $query = "UPDATE policy 
+            SET policy_name = ?, 
+            spam_lover = ?, 
+            virus_lover = ?, 
+            banned_files_lover = ?, 
+            bypass_virus_checks = ?, 
+            bypass_spam_checks = ?, 
+            bypass_header_checks = ?, 
+            spam_tag_level = ?, 
+            spam_tag2_level = ?, 
+            spam_kill_level = ?, 
+            spam_dsn_cutoff_level = ?, 
+            spam_quarantine_cutoff_level = ? , 
+            message_size_limit = ?, 
+            warnvirusrecip = ? , 
+            warnbannedrecip = ? , 
+            warnbadhrecip = ? , 
+            spam_modifies_subj = ?, 
+            spam_subject_tag2 = ?, 
+            bad_header_lover = ?, 
+            bypass_banned_checks = ? 
+            WHERE id = ?";      
+      #echo $query;
 	if ($dbconfig == "mysqli") { 
-	  
-  		if ($result = $mysqli->query($query)) {
+      $stmt = $mysqli->prepare($query);
+      $stmt->bind_param("sssssssdddddisssssssi", $policyname, $spamlover, $viruslover, $bannedfileslover, $bypassvirusscan, $bypassspamchecks,
+         $bypassheaderchecks, $spamtaglevel, $spamtag2level, $spamkilllevel, $spamdsncutofflevel, $spam_quarantine_cutoff_level,
+         $messagesizelimit, $warnvirusrecip, $warnbannedrecip, $warnbadheader, $modifysubj, $spamsubjecttag2, $badheaderlover,
+         $bypassbannedchecked, $policyid);
+      ;
+      
+  		#if ($result = $mysqli->query($query)) {
+  		if ( $stmt -> execute()) {
 	  		echo "<table width='100%' class='sample'><tr><td width='22'><img src='../images/ok.png' /></td><td class='text'>Policy Successfully Updated</td></tr></table>";
 	    } else {
 	  		echo "<table width='100%'> class='sample'<tr><td width='22'><img src='../images/no.png' /></td><td>MySQL Error: " . $mysqli->error . "</td></tr></table>";
@@ -227,15 +273,67 @@ if ($dbconfig == "mysqli") {
 	if (isset($_POST['policy'])) 
 	{
 	  
-	$policy = $_POST['policy'];
-	$poilicyquery = "SELECT * FROM policy WHERE id = '" . $policy . "'";
-	if ($dbconfig == "mysqli") { 
-		$policyedit = $mysqli->query($poilicyquery);
-		$row_policy = $policyedit->fetch_array(MYSQLI_BOTH);
-	} else { 
-		$policyedit = mysql_query($poilicyquery);
-		$row_policy = mysql_fetch_array($policyedit, MYSQLI_BOTH);
-	}	  
+      $policy = $_POST['policy'];
+      //$poilicyquery = "SELECT * FROM policy WHERE id = '" . $policy . "'";
+      $poilicyquery = "SELECT `policy`.`id`,
+                        `policy`.`policy_name`,
+                        `policy`.`virus_lover`,
+                        `policy`.`spam_lover`,
+                        `policy`.`banned_files_lover`,
+                        `policy`.`bad_header_lover`,
+                        `policy`.`bypass_virus_checks`,
+                        `policy`.`bypass_spam_checks`,
+                        `policy`.`bypass_banned_checks`,
+                        `policy`.`bypass_header_checks`,
+                        `policy`.`virus_quarantine_to`,
+                        `policy`.`spam_quarantine_to`,
+                        `policy`.`banned_quarantine_to`,
+                        `policy`.`bad_header_quarantine_to`,
+                        `policy`.`clean_quarantine_to`,
+                        `policy`.`other_quarantine_to`,
+                        `policy`.`spam_tag_level`,
+                        `policy`.`spam_tag2_level`,
+                        `policy`.`spam_kill_level`,
+                        `policy`.`spam_dsn_cutoff_level`,
+                        `policy`.`spam_quarantine_cutoff_level`,
+                        `policy`.`addr_extension_virus`,
+                        `policy`.`addr_extension_spam`,
+                        `policy`.`addr_extension_banned`,
+                        `policy`.`addr_extension_bad_header`,
+                        IFNULL(`policy`.`warnvirusrecip`,'N') warnvirusrecip ,
+                        IFNULL(`policy`.`warnbannedrecip`,'N') warnbannedrecip,
+                        IFNULL(`policy`.`warnbadhrecip`,'N') warnbadhrecip,
+                        `policy`.`newvirus_admin`,
+                        `policy`.`virus_admin`,
+                        `policy`.`banned_admin`,
+                        `policy`.`bad_header_admin`,
+                        `policy`.`spam_admin`,
+                        `policy`.`spam_subject_tag`,
+                        `policy`.`spam_subject_tag2`,
+                        `policy`.`message_size_limit`,
+                        `policy`.`banned_rulenames`,
+                        `policy`.`unchecked_lover`,
+                        `policy`.`spam_tag3_level`,
+                        `policy`.`unchecked_quarantine_to`,
+                        `policy`.`archive_quarantine_to`,
+                        `policy`.`spam_modifies_subj`
+                     FROM `amavisd`.`policy`
+                     WHERE id = ?";
+      
+      if ($dbconfig == "mysqli") { 
+         #$policyedit = $mysqli->query($poilicyquery);
+         #$row_policy = $policyedit->fetch_array(MYSQLI_BOTH);
+         
+         $stmt = $mysqli->prepare($poilicyquery);
+         $stmt->bind_param("i", $policy);
+         $stmt->execute();
+         $result = $stmt->get_result();
+         $row_policy = $result->fetch_array(MYSQLI_BOTH);
+         $result->free();
+      } else { 
+         $policyedit = mysql_query($poilicyquery);
+         $row_policy = mysql_fetch_array($policyedit, MYSQLI_BOTH);
+      }	  
 ?>
         <form id="form2" name="form2" method="post" action="">
           <table width="100%" border="0" cellpadding="0" class="admin">
@@ -356,7 +454,6 @@ if ($dbconfig == "mysqli") {
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Warn Virus Recipient</td>
               <td><select name="warnvirusrecip" class="style5" id="warnvirusrecip">
-                <option>NA</option>
                 <option value="Y" <?php if ($row_policy["warnvirusrecip"] == "Y") { echo "selected"; } ?>>Yes</option>
                 <option value="N" <?php if ($row_policy["warnvirusrecip"] == "N") { echo "selected"; } ?>>No</option>
                </select></td>
@@ -364,15 +461,13 @@ if ($dbconfig == "mysqli") {
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Warn Banned File Recipient</td>
               <td><select name="warnbannedrecip" class="style5" id="warnbannedrecip">
-                <option>NA</option>
                 <option value="Y" <?php if ($row_policy["warnbannedrecip"] == "Y") { echo "selected"; } ?>>Yes</option>
                 <option value="N" <?php if ($row_policy["warnbannedrecip"] == "N") { echo "selected"; } ?>>No</option>
-                            </select></td>
+               </select></td>
             </tr>
             <tr>
               <td background="../images/butonbackground.jpg" class="text">Warn Bad Header Recipient</td>
               <td><select name="warnbadheader" class="style5" id="warnbadheader">
-                <option>NA</option>
                 <option value="Y" <?php if ($row_policy["warnbadhrecip"] == "Y") { echo "selected"; } ?>>Yes</option>
                 <option value="N" <?php if ($row_policy["warnbadhrecip"] == "N") { echo "selected"; } ?>>No</option>
                             </select></td>
