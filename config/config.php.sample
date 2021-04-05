@@ -23,7 +23,7 @@ $enable_clamav_test = "yes"; // Recommended if Clamav-Daemon is running on same 
 $password_encryption = "md5-crypt"; 
 
 $dbconfig = "mysqli"; // Supported mysqli(PHP5) and mysql(PHP4)
-
+$dbconfigvmail = "vmail"; // for user authentification
 $dbhost = 'localhost';  // Database Host to connect to
 $dbuser = 'postfix';  // Username that has access to your Postfix Database
 $dbpass = 'postfix';     // Password that has access to your Postfix Database
