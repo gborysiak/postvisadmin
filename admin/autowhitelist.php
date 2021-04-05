@@ -57,10 +57,10 @@ require_once("../functions.inc.php");
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
       
-         <? 
+         <?php 
 if (isset($_GET['email'])) {
 	$email = $_GET['email'];
 	$deletequery = "DELETE FROM awl WHERE email = '$email' LIMIT 1";			  
@@ -83,11 +83,11 @@ if (isset($_GET['email'])) {
               <input name="search" type="text" class="footertext" id="search" />
               <span class="footertext">Rows Per Page:</span>
             <select  class="footertext" name="rowsperpage">
-              <option value="20" <? if ($rowsPerPage=="20") { echo "selected"; } ?>>20</option>
-              <option value="40" <? if ($rowsPerPage=="40") { echo "selected"; } ?>>40</option>
-              <option value="60" <? if ($rowsPerPage=="60") { echo "selected"; } ?>>60</option>
-              <option value="80" <? if ($rowsPerPage=="80") { echo "selected"; } ?>>80</option>
-              <option value="100" <? if ($rowsPerPage=="100") { echo "selected"; } ?>>100</option>
+              <option value="20" <?php if ($rowsPerPage=="20") { echo "selected"; } ?>>20</option>
+              <option value="40" <?php if ($rowsPerPage=="40") { echo "selected"; } ?>>40</option>
+              <option value="60" <?php if ($rowsPerPage=="60") { echo "selected"; } ?>>60</option>
+              <option value="80" <?php if ($rowsPerPage=="80") { echo "selected"; } ?>>80</option>
+              <option value="100" <?php if ($rowsPerPage=="100") { echo "selected"; } ?>>100</option>
             </select>
             
             
@@ -172,7 +172,7 @@ if ($dbconfig == "mysqli") {
 ?>
       <tr><td colspan="6" bgcolor="#003366" class="whitefooter"> <center>   
         
-          <?
+          <?php
 	  $maxPage = ceil($numrows/$rowsPerPage);
 
 

@@ -16,12 +16,12 @@ require_once("../functions.inc.php");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>PostVis Admin - Viewing Mail ID: <? echo $_GET['mail_id']; ?></title>
+<title>PostVis Admin - Viewing Mail ID: <?php echo $_GET['mail_id']; ?></title>
 <link href="/style2.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-<? 
+<?php
 
 
 $mail_id = $_GET['mail_id'];
@@ -43,9 +43,11 @@ if ($dbconfig == "mysqli") {
 $params['include_bodies'] = true;
 $params['decode_bodies']  = true;
 $params['decode_headers'] = true;
-$params['input']          = $string;
-$params['crlf']           = "\r\n";
-$structure = Mail_mimeDecode::decode($params);
+#$params['input']          = $string;
+#$params['crlf']           = "\r\n";
+#$structure = Mail_mimeDecode::decode($params);
+$mail_decode = new Mail_mimeDecode($string);
+$structure = $mail_decode->decode($params);
 $headers = $structure->headers;
 $received = $structure->headers["received"];
 
@@ -59,7 +61,7 @@ $received = $structure->headers["received"];
           <table width="100%" border="0" cellpadding="0" cellspacing="0" class="main">
             <tr>
               <td width="96%" bgcolor="#003366"><div align="center">
-                <? if ($_GET['format'] == "html") {
+                <?php if ($_GET['format'] == "html") {
         		echo "Viewing HTML Message: ". $_GET['mail_id']; 
 			} elseif ($_GET['format'] == "plain") {
 				echo "Viewing Plain Text Message: ". $_GET['mail_id'];
@@ -67,7 +69,7 @@ $received = $structure->headers["received"];
 				?>
               </div></td>
               <td width="4%" bgcolor="#003366"><div align="right">
-             <? 
+             <?php 
 			 $mail_id = $_GET['mail_id'];
 			 $mail_id = urlencode($mail_id);
 			 
@@ -86,7 +88,7 @@ $received = $structure->headers["received"];
       <tr>
         <td width="8%" bgcolor="#003366" class="boldwhitetext">From: </td>
         <td width="92%" class="text">
-		<? 
+		<?php
 		$from = $headers['from'];
 		$from = str_replace("<", "&lt;", $from);
 		echo $from;
@@ -95,7 +97,7 @@ $received = $structure->headers["received"];
       <tr>
         <td bgcolor="#003366" class="boldwhitetext">To: </td>
         <td class="text">
-		<? 
+		<?php 
 		$to = $headers['to'];
 		$to = str_replace("<", "&lt;", $to);
 		echo $from; 
@@ -104,7 +106,7 @@ $received = $structure->headers["received"];
       <tr>
         <td bgcolor="#003366" class="boldwhitetext">Date:</td>
         <td class="text">
-		<? 
+		<?php 
 		$date = $headers['date'];
 		$date = str_replace("<", "&lt;", $date);
 		echo $date;
@@ -112,11 +114,11 @@ $received = $structure->headers["received"];
       </tr>
       <tr>
         <td bgcolor="#003366" class="boldwhitetext">Subject:</td>
-        <td class="text"><? echo $headers['subject']; ?></td>
+        <td class="text"><?php echo $headers['subject']; ?></td>
       </tr>
       <tr>
         <td colspan="2" bgcolor="#FFFFFF" class="text">
-		<? 
+		<?php
 		
 		if (isset($structure->parts)) {
 			foreach ($structure->parts as $part) {

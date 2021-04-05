@@ -61,8 +61,8 @@ body {
     <td valign="top">
       <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">      
-      <div align="center" class="text"><span class="style6">Welcome <? echo $_SESSION['username']; ?>!</span><br />
-          <strong>Current Date/Time:</strong> <? echo date("n/j/y g:iA"); ?>      </div>
+      <div align="center" class="text"><span class="style6">Welcome <?php echo $_SESSION['username']; ?>!</span><br />
+          <strong>Current Date/Time:</strong> <?php echo date("n/j/y g:iA"); ?>      </div>
       <?php if ($enable_status_checks == "yes") { ?>
       <table width="45%" border="1" align="center" cellpadding="1" cellspacing="1" class="main">
         <tr>

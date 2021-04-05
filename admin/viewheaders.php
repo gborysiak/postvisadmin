@@ -16,12 +16,12 @@ require_once("../functions.inc.php");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>PostVis Admin - Viewing Headers for Mail ID: <? echo $_GET['mail_id']; ?></title>
+<title>PostVis Admin - Viewing Headers for Mail ID: <?php echo $_GET['mail_id']; ?></title>
 <link href="/style2.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-<? 
+<?php
 
 
 $mail_id = $_GET['mail_id'];
@@ -43,9 +43,11 @@ if ($dbconfig == "mysqli") {
 $params['include_bodies'] = false;
 $params['decode_bodies']  = true;
 $params['decode_headers'] = true;
-$params['input']          = $string;
-$params['crlf']           = "\r\n";
-$structure = Mail_mimeDecode::decode($params);
+#$params['input']          = $string;
+#$params['crlf']           = "\r\n";
+#$structure = Mail_mimeDecode::decode($params);
+$mail_decode = new Mail_mimeDecode($string);
+$structure = $mail_decode->decode($params);
 $headers = $structure->headers;
 $received = $structure->headers["received"];
 //print_r($headers);
@@ -58,7 +60,7 @@ $received = $structure->headers["received"];
 
 <table width="900" border="1" align="center" cellpadding="1" cellspacing="1" class="main">
   
-    <?
+    <?php
 	foreach ($headers as $key => $value) {
 	if ($key == "received") {
 		if (is_array($received)) {

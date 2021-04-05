@@ -66,7 +66,7 @@ if (isset($_POST['addpolicy'])) {
 	$badheaderlover = $_POST['bad_headers_lover2'];
 	$bypassvirusscan = $_POST['bypass_virus_check2'];
 	$bypassspamchecks = $_POST['bypass_spam_check2'];
-	$bypassbannedchecks = $_POST['bypass_banned_check2'];
+	$bypassbannedchecked = $_POST['bypass_banned_check2'];
 	$bypassheaderchecks = $_POST['bypass_header_check2'];
 	$spamtaglevel = $_POST['spam_tag_level2'];
 	$spamtag2level = $_POST['spam_tag2_level2'];
@@ -80,15 +80,32 @@ if (isset($_POST['addpolicy'])) {
 	$warnbadheader = $_POST['warnbadheader2'];
 	$messagesizelimit = $_POST['messagesizelimit2'];
 	
-	$addpolicyquery = "INSERT into policy(policy_name, virus_lover, spam_lover, banned_files_lover, bad_header_lover, bypass_virus_checks, bypass_spam_checks, bypass_banned_checks, bypass_header_checks, spam_tag_level, spam_tag2_level, spam_kill_level, spam_dsn_cutoff_level, spam_quarantine_cutoff_level, spam_modifies_subj, spam_subject_tag2, warnvirusrecip, warnbannedrecip, warnbadhrecip, message_size_limit) VALUES('$policyname', '$viruslover', '$spamlover', '$bannedfileslover', '$badheaderlover', '$bypassvirusscan', '$bypassspamchecks', '$bypassbannedchecks', '$bypassheaderchecks' , '$spamtaglevel' ,'$spamtag2level', '$spamkilllevel' , '$spamdsncutofflevel' , '$spam_quarantine_cutoff_level','$modifysubj','$spamsubjecttag2' , '$warnvirusrecip' , '$warnbannedrecip' , '$warnbadheader' , '$messagesizelimit')";
-		  
+	$addpolicyquery = "INSERT into policy(policy_name, spam_lover, virus_lover, banned_files_lover,  bypass_virus_checks, bypass_spam_checks, 
+      bypass_header_checks, spam_tag_level, spam_tag2_level, spam_kill_level, spam_dsn_cutoff_level, spam_quarantine_cutoff_level, 
+      message_size_limit, warnvirusrecip, warnbannedrecip, warnbadhrecip, spam_modifies_subj, spam_subject_tag2, bad_header_lover,
+      bypass_banned_checks) 
+      VALUES(?, ?, ?, ?, ?, ?, 
+      ? , ? , ?, ? , ? , ?,
+      ?, ? , ? , ?, ?, ? , ?,    
+      ?)";
+   
 	if ($dbconfig == "mysqli") {
 		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-		if ($result = $mysqli->query($addpolicyquery)) {
-			$error = "<table width='100%' class='sample'><tr><td width='22'><img src='../images/ok.png' /></td><td class='text'>Policy Successfully Inserted: $policyname</td></tr></table>";
-		} else {
-	 	 echo '<font color="red">MySQL Error: ' . $mysqli->error . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
-	 	} 
+      if( $stmt = $mysqli->prepare($addpolicyquery) ) {
+      $stmt->bind_param("sssssssdddddisssssss", $policyname, $spamlover, $viruslover, $bannedfileslover, $bypassvirusscan, $bypassspamchecks,
+         $bypassheaderchecks, $spamtaglevel, $spamtag2level, $spamkilllevel, $spamdsncutofflevel, $spam_quarantine_cutoff_level,
+         $messagesizelimit, $warnvirusrecip, $warnbannedrecip, $warnbadheader, $modifysubj, $spamsubjecttag2, $badheaderlover,
+         $bypassbannedchecked);
+         
+         #if ($result = $mysqli->query($addpolicyquery)) {
+         if ( $stmt -> execute()) {
+            $error = "<table width='100%' class='sample'><tr><td width='22'><img src='../images/ok.png' /></td><td class='text'>Policy Successfully Inserted: $policyname</td></tr></table>";
+         } else {
+            echo '<font color="red">MySQL Error: ' . $mysqli->error . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
+         } 
+      } else {
+         echo '<font color="red">MySQL Error: ' . $mysqli->error . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
+      }
 	} else { 
 		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
 		mysql_select_db($postfixdatabase) or die('Could not select database');

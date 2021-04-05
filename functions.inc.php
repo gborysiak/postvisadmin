@@ -223,6 +223,15 @@ class AliasInfo
 class DomainInfo
 {
 	var $domain;
+   var $description;
+	var $maxaccounts;
+	var $maxalias;
+	var $created;
+	var $quota;
+	var $modified;
+	var $active;
+	var $numberaccounts;
+	var $aliascount;
 		
 	function __construct()
 	{ 
@@ -240,29 +249,37 @@ class DomainInfo
 	{
 		include("config/config.php");
 		$this->domain=$domain;
+      //echo $domain;
 		$domainquery="SELECT * FROM domain WHERE domain='$domain'";
 		$userscountquery = "SELECT count(domain) as cnt FROM mailbox WHERE domain='$domain'";
 		$aliascountquery = "SELECT count(domain) as cnt FROM alias WHERE domain='$domain' AND address != goto";
 		
 		if ($dbconfig == "mysqli") {
 		
-			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-	
-				if ($resultdomaininfo = $mysqli->query($domainquery)) {
-					$row_domaininfo = $resultdomaininfo->fetch_array(MYSQLI_ASSOC);
-					
-					if ($accountcount = $mysqli->query($userscountquery)) {
-						$row_accounts = $accountcount->fetch_array(MYSQLI_NUM);
-					}
-					
-					if ($aliasaccount = $mysqli->query($aliascountquery)) {
-						$row_aliases = $aliasaccount->fetch_array(MYSQLI_NUM);
-						
-					}
-				
-				} 
-		
+			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);	
+         /*
+         if ($resultdomaininfo = $mysqli->query($domainquery)) {
+            $row_domaininfo = $resultdomaininfo->fetch_array(MYSQLI_ASSOC);
+         } else {
+            die($mysqli->error);
+         } 
+
+ 
+         if ($accountcount = $mysqli->query($userscountquery)) {
+               $row_accounts = $accountcount->fetch_array(MYSQLI_NUM);
+         } else {
+            die($mysqli->error);
+         }            
+ 
+            
+         if ($aliasaccount = $mysqli->query($aliascountquery)) {
+               $row_aliases = $aliasaccount->fetch_array(MYSQLI_NUM);               
+         } else {
+            die($mysqli->error);
+         }            
+         */		
 		} else { 
+         /*
 			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
 			mysql_select_db($postfixdatabase) or die('Could not select database');
 			if ($result = mysql_query($domainquery)) {
@@ -276,9 +293,11 @@ class DomainInfo
 					$row_aliases = mysql_fetch_array($aliasaccount, MYSQL_NUM);
 				}
 			}
+         */
+         die("erreur de configuration");  
 		}
 			
-		
+		/*      
 		$this->description = $row_domaininfo['description'];
 		$this->domain = $row_domaininfo['domain'];
 		$this->maxaccounts = $row_domaininfo['mailboxes'];
@@ -289,7 +308,19 @@ class DomainInfo
 		$this->active = $row_domaininfo['active'];
 		$this->numberaccounts = $row_accounts[0];
 		$this->aliascount = $row_aliases[0];
-	  
+      */
+      
+		$this->description = "";
+		$this->domain = "";
+		$this->maxaccounts = "";
+		$this->maxalias = "";
+		$this->created = "";
+		$this->quota = "";
+		$this->modified = "";
+		$this->active = "";
+		$this->numberaccounts = 0;
+		$this->aliascount = 0;
+      
 	}
 };
 		

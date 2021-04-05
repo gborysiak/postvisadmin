@@ -46,10 +46,10 @@ require_once("../functions.inc.php");
   </tr>
   <tr>
     <td valign="top">
-<? include('adminmenu.php'); ?>    </td>
+<?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
 	<table width="100%"  class="main">
-<? 
+<?php
 $mail_id = $_GET['mail_id'];
 $query = "SELECT * FROM quarantine WHERE mail_id = '$mail_id'";
 if ($dbconfig == "mysqli") {
@@ -69,9 +69,10 @@ if ($dbconfig == "mysqli") {
 $params['include_bodies'] = false;
 $params['decode_bodies']  = true;
 $params['decode_headers'] = true;
-$params['input']          = $string;
-$params['crlf']           = "\r\n";
-$structure = Mail_mimeDecode::decode($params);
+#$params['input']          = $string;
+#$params['crlf']           = "\r\n";
+$mail_decode = new Mail_mimeDecode($string);
+$structure = $mail_decode->decode($params);
 $headers = $structure->headers;
 $received = $structure->headers["received"];
 $mail_id = $_GET['mail_id'];
@@ -133,6 +134,7 @@ foreach ($headers as $key => $value) {
 }
 echo "<tr class='boldwhitetext'><td colspan='2' bgcolor='#003366'><center>Spamassassin Report<center></td></tr>";
 echo "<tr><table width='100%' class=main><tr class='boldtext' background='../images/butonbackground.jpg'><td>Rule</td><td>Score</td><td>Description</td></tr>";
+/*
 if ($dbconfig == "mysqli") { 
 		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 		
@@ -148,6 +150,7 @@ $sa_tests = str_replace("]","",$sa_tests);
 $sa_tests = str_replace(" ","",$sa_tests);
 $sa_rules = explode(",",$sa_tests);
 $sa_count = count($sa_rules);
+
 $total = 0;
 for ($i=0;$i<$sa_count;$i++) {
 	$sa_rule = explode("=",$sa_rules[$i]);
@@ -166,6 +169,7 @@ for ($i=0;$i<$sa_count;$i++) {
 }
 echo "<tr class='footertext' background='../images/butonbackground.jpg'><td><strong>TOTAL:</strong></td><td colspan=2><strong>$total</strong></td></tr>";
 echo "";
+*/
 	?>
 </table>
     </div></td>

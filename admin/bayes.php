@@ -49,7 +49,7 @@ require_once("../functions.inc.php");
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
       <table width="75%" border="0" align="center" cellpadding="0" class="main">
         <tr>
@@ -73,7 +73,7 @@ if ($dbconfig == "mysqli") {
 			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Newest Token Age:</td><td>" . date('F dS Y h:i:s A',$rows[9]) . "</td></tr>";
 		
 		} else {
-			echo "There was an error: " . $mysqli->error();
+			echo "There was an error: " . $mysqli->error;
 		}
 	$results->close();
 	$mysqli->close();

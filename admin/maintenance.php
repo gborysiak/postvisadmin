@@ -47,7 +47,7 @@ require_once("../config/config.php");
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="text"><div id="text">
 <?php 
 
@@ -138,7 +138,7 @@ if (isset($_POST['msglogcleanup'])) {
             </tr>
         </table>
         </form>
-		<? } ?>
+		<?php } ?>
       <br />
     </div></td>
   </tr>

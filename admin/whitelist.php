@@ -51,10 +51,10 @@ if (isset($_POST['addlist'])) {
   </tr>
   <tr>
     <td valign="top">
-      <? include('adminmenu.php'); ?>    </td>
+      <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
       <form id="form1" name="form1" method="post" action="">
-<?
+<?php
 if (isset($error)) {
 	echo "<table class='sample' width='100%'><tr class='text'><td class='text' width='22'>$error</td></tr></table>";
 }
@@ -68,7 +68,7 @@ if (isset($error)) {
             <td width="204" class="text"><label>
               <select name="user" class="style5" id="user">
                 <option>Select User...</option>
-<? 
+<?php 
 $query = "SELECT id, email FROM users";
 
 if ($dbconfig == "mysqli") {
@@ -133,7 +133,7 @@ if ($dbconfig == "mysqli") {
           <td width="170" background="../images/butonbackground.jpg" class="text"><div align="center">Delete</div></td>
         </tr>
         
-          <? 		
+          <?php 		
 if ($dbconfig == "mysqli") {
 	if ($results=$mysqli->query($whitelist_query)) {
   		$rows_affected = $results->num_rows;
@@ -172,7 +172,7 @@ if ($dbconfig == "mysqli") {
           <td width="267" background="../images/butonbackground.jpg" class="text"><div align="center">Recipient</div></td>
           <td width="170" background="../images/butonbackground.jpg" class="text"><div align="center">Delete</div></td>
         </tr>
-        <? 
+        <?php 
 
 if ($dbconfig == "mysqli") { 
 	if ($results=$mysqli->query($blacklist_query)) {

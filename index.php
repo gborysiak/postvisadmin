@@ -50,10 +50,10 @@ $domaininfo = new DomainInfo();
   </tr>
   <tr>
     <td valign="top">
-      <? include('menu.php'); ?>    </td>
+      <?php include('menu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">      
-      <div align="center"><span class="text"><span class="style6">Welcome <? echo $_SESSION['username']; ?>!</span><br />
-          <strong>Current Date/Time:</strong> <? echo date("n/j/y g:iA"); ?> </span><br />
+      <div align="center"><span class="text"><span class="style6">Welcome <?php echo $_SESSION['username']; ?>!</span><br />
+          <strong>Current Date/Time:</strong> <?php echo date("n/j/y g:iA"); ?> </span><br />
       </div>
       <table width="50%" border="0" align="center" class="main">
         <tr>
@@ -61,22 +61,22 @@ $domaininfo = new DomainInfo();
           </tr>
         <tr>
           <td width="48%" background="images/butonbackground.jpg" class="text">Domain: </td>
-          <td width="52%" class="text"><? echo $domaininfo->domain; ?></td>
+          <td width="52%" class="text"><?php echo $domaininfo->domain; ?></td>
           </tr>
         <tr>
           <td background="images/butonbackground.jpg" class="text">MailBoxes            </td>
-          <td class="text"><? echo $domaininfo->numberaccounts . "/"; 
+          <td class="text"><?php echo $domaininfo->numberaccounts . "/"; 
 		  if ($domaininfo->maxaccounts == 0) { echo "Unlimited"; } else { echo $domaininfo->maxaccounts;}?></td>
           </tr>
         <tr>
           <td background="images/butonbackground.jpg" class="text">Aliases</td>
-          <td class="text"><? echo $domaininfo->aliascount . "/";
+          <td class="text"><?php echo $domaininfo->aliascount . "/";
 		   if ($domaininfo->maxalias == 0) { echo "Unlimited"; } else { echo $domaininfo->maxalias;}?></td>
         </tr>
         <tr>
           <td background="images/butonbackground.jpg" class="text">Messages in Quarantine: </td>
           <td class="text">
-<php? 
+<?php 
 $domain = $_SESSION['domain'];
 $quarantine_query = $quarantine_query . " AND recipient.email like '%$domain'";
 if ($dbconfig == "mysqli") {
