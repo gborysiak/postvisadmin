@@ -141,7 +141,7 @@ if ($dbconfig == "mysqli") {
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 	if ($policyresults = $mysqli->query($policyquery)) {
 		echo '<select name="policy" class="style5" id="policy">';
-		while ($rowpolicy = $rows=$policyresults->fetch_array(MYSQLI_BOTH)) {
+		while ($rowpolicy = $policyresults->fetch_array(MYSQLI_BOTH)) {
 			if (isset($_POST['policy'])) {
 				$policy = $_POST['policy'];
 				if ($policy == $rowpolicy[0]) {

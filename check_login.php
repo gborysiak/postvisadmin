@@ -11,11 +11,11 @@ if (!isset($_SESSION['username']) or !isset($_SESSION['password'])) {
 
    // 210405 GRBOFR use vmail mailbox table for authentifications
 	//$query = "SELECT password , superadmin, domain, active FROM admin WHERE username ='" . $_SESSION['username']. "'";
-	$query = "SELECT password, isadmain, domain, active FROM mailbox WHERE username = ?";
+	$query = "SELECT password, isadmin, domain, active FROM mailbox WHERE username = ?";
    
 	if ($dbconfig == "mysqli") { 
 	
-		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $authentdatabase);
       #if (mysqli_connect_errno()) {
       #   printf("Connect failed: %s\n", mysqli_connect_error());
       #   exit();
@@ -26,7 +26,9 @@ if (!isset($_SESSION['username']) or !isset($_SESSION['password'])) {
          $stmt->execute();
          $result = $stmt->get_result();
          $row = $result->fetch_assoc();
-      }  
+      }  else {
+         die( $mysqli->error);
+      }
 	} else {
       die("configuration error");
 		/*
@@ -41,7 +43,7 @@ if (!isset($_SESSION['username']) or !isset($_SESSION['password'])) {
 	$active = $row["active"];
    if (($_SESSION['password'] == $dbpass1)) {
       $_SESSION['domain'] = $domain;
-      if($row["admin"] == 1) {
+      if($row["isadmin"] == 1) {
          $superadmin = 1;
       } else {
          $superadmin = 0;

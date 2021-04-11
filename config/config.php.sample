@@ -33,6 +33,7 @@ $dbpass = 'postfix';     // Password that has access to your Postfix Database
 // 1 = /domain/user
 
 $postfixdatabase = 'postfix'; // Postfix Database
+$authentdatabase = "vmail"; // for user authentification
 
 $maildir_style = 0; 
 
