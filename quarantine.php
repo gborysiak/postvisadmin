@@ -51,15 +51,16 @@ $offset = ($pageNum - 1) * $rowsPerPage;
     <td width="738"><div id="title">
       <table class='sample' width='100%'>
         <tr>
-          <td width="59%" class='text'>Quarantine for <? echo $_SESSION['domain']; ?></td>
+          <td width="59%" class='text'>Quarantine for <?php echo $_SESSION['domain']; ?></td>
           <td width="41%" class='text'>          </td>
         </tr>
+        
       </table>
     </div></td>
   </tr>
   <tr>
     <td valign="top">
-      <? include('menu.php'); ?>    </td>
+      <?php include('menu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
      <form id="form1" name="form1" method="GET" action="">
             <table align="center" border="0">
@@ -67,18 +68,17 @@ $offset = ($pageNum - 1) * $rowsPerPage;
                 <td  class='style5'>Search: </td>
                 <td >
                   <select class="style5" name="searchfield">
-					<option value="recipient">To:</option>
 					<option value="sender">From:</option>
 					<option value="subject">Subject:</option>
 					</select>                </td>
-                <td><input name="search" type="text" class="style5" value="<? echo $_GET['search']; ?>" /></td>
+                <td><input name="search" type="text" class="style5" value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" /></td>
 				<td class="style5">Rows: 
 				<select  class="style5" name="rowsperpage">
-					<option value="20" <? if ($rowsPerPage=="20") { echo "selected"; } ?>>20</option>
-					<option value="40" <? if ($rowsPerPage=="40") { echo "selected"; } ?>>40</option>
-					<option value="60" <? if ($rowsPerPage=="60") { echo "selected"; } ?>>60</option>
-					<option value="80" <? if ($rowsPerPage=="80") { echo "selected"; } ?>>80</option>
-					<option value="100" <? if ($rowsPerPage=="100") { echo "selected"; } ?>>100</option>
+					<option value="20" <?php if ($rowsPerPage=="20") { echo "selected"; } ?>>20</option>
+					<option value="40" <?php if ($rowsPerPage=="40") { echo "selected"; } ?>>40</option>
+					<option value="60" <?php if ($rowsPerPage=="60") { echo "selected"; } ?>>60</option>
+					<option value="80" <?php if ($rowsPerPage=="80") { echo "selected"; } ?>>80</option>
+					<option value="100" <?php if ($rowsPerPage=="100") { echo "selected"; } ?>>100</option>
 				</select>				</td>
                 <td>
 				<input type="submit" name="submit" class="style5" id="submit" value="Search" /></td>
@@ -150,56 +150,73 @@ if (isset($error)) {
           <td width="10" bgcolor='#003366' class="whitefooter">Q</td>
 		  <td  width="50"bgcolor='#003366' class="whitefooter">Release</td>
         </tr>
-      <? 
-
+      <?php 
+$numrows = 0;
+$bindparam = "";
 $domain = $_SESSION['domain'];
-$quarantine_query = $quarantine_query . " AND recipient.email LIKE '%$domain'";
+$quarantine_query = $quarantine_query . " AND recipient.email LIKE ?";
+$bindparam = $bindparam . "s";
 if (isset($_GET['searchfield'])) {
 	$searchfield = $_GET['searchfield'];
 	$search = $_GET['search'];
+   $search = "%" . $search ."%";
 	if ($searchfield == "recipient") {
-		$quarantine_query = $quarantine_query . " AND recipient.email LIKE '%$search%'";
+		//$quarantine_query = $quarantine_query . " AND recipient.email LIKE ?";
 	} elseif ($searchfield == "sender") {
-		$quarantine_query = $quarantine_query . " AND sender.email LIKE '%$search%'"; 
+		$quarantine_query = $quarantine_query . " AND sender.email LIKE ?"; 
+      $bindparam = $bindparam . "s";
 	} elseif ($searchfield == "subject") {
-		$quarantine_query = $quarantine_query . " AND subject LIKE '%$search%'";
+		$quarantine_query = $quarantine_query . " AND subject LIKE ?";
+      $bindparam = $bindparam . "s";
 	}
 }
-$query = $quarantine_query;
+//$query = $quarantine_query;
 $quarantine_query = $quarantine_query . " ORDER BY time_iso DESC LIMIT $offset, $rowsPerPage ";
 
 if ($dbconfig == "mysqli") {
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-		if (mysqli_connect_errno()) {
-   			printf("Connect failed: %s\n", mysqli_connect_error());
-			exit();
-		}
-	$result = $mysqli->query($query);
-	$numrows = $result->num_rows;	
-	
-	if ($quarantineresults = $mysqli->query($quarantine_query)) {
-		$i = 0;
-		while ($row=$quarantineresults->fetch_array(MYSQLI_ASSOC)) {
-			
-			$secretid = urlencode($row["secret_id"]);
-			$mailid = urlencode($row["mail_id"]);
-			$receiveddate = $row["time_iso"];
-			$receiveddate = strftime("%b %d %I:%M %p", $receiveddate);
-			if ($i == 1){
-				$background = "bgcolor='#F2F2F2'";
-				$i=0;
-			} else {
-				$background = "bgcolor = '#FFFFFF'";
-				$i=1;
-			}
-			echo "<tr class='style5'><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinefor']."</td>";
-			echo "<td $background><a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=release'>Rel</a> / <a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=delete'>Del</a></td></tr>";
-		}
-	} else {
-		echo "<tr style='text'><td colspan='5'>There was an error: " . $mysqli->error . "</td></tr>";
-	}
-	$mysqli->close();  
+
+
+   if( $stmt = $mysqli->prepare($quarantine_query) ) {
+      if( strlen($bindparam) == 1 ) {
+         $stmt->bind_param($bindparam, $_SESSION['username']);
+      } else {
+         $stmt->bind_param($bindparam, $_SESSION['username'], $search);
+      }
+      $stmt->execute();
+      
+      
+      if ($quarantineresults = $stmt->get_result()) {
+         $numrows = $quarantineresults->num_rows;	
+         $i = 0;
+         while ($row = $quarantineresults->fetch_assoc()) {
+            
+            $secretid = urlencode($row["secret_id"]);
+            $mailid = urlencode($row["mail_id"]);
+            $receiveddate = $row["time_iso"];
+            $receiveddate = strftime("%b %d %I:%M %p", $receiveddate);
+            if ($i == 1){
+               $background = "bgcolor='#F2F2F2'";
+               $i=0;
+            } else {
+               $background = "bgcolor = '#FFFFFF'";
+               $i=1;
+            }
+            echo "<tr class='style5'><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinefor']."</td>";
+            echo "<td $background><a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=release'>Rel</a> / <a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=delete'>Del</a></td></tr>";
+         }
+      } else {
+         echo "<tr style='text'><td colspan='5'>There was an error: " . $mysqli->error . "</td></tr>";
+      }
+      $quarantineresults->close();
+      $mysqli->close(); 
+   }  else {
+      die( $mysqli->error);
+   }
+   
 } else {
+   die("configuration error");
+   /*
 	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
 	mysql_select_db($postfixdatabase) or die('Could not select database');
 	$result = mysql_query($query);
@@ -224,11 +241,12 @@ if ($dbconfig == "mysqli") {
 		echo "<tr style='text'><td colspan='5'>There was an error: " . mysql_error($link) . "</td></tr>";
 	}
 	mysql_close($link); 
+   */
 }
 	  ?>
 	  </tr>
       <td colspan="7" bgcolor='#003366' class="whitefooter"><center>
-<?
+<?php
 $maxPage = ceil($numrows/$rowsPerPage);
 $self = $_SERVER['PHP_SELF'];
 

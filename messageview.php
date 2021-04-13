@@ -43,10 +43,10 @@ require_once("functions.inc.php");
   </tr>
   <tr>
     <td valign="top">
-<? include('menu.php'); ?>    </td>
+<?php include('menu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">
 	<table width="100%"  class="main">
-<? 
+<?php 
 $mail_id = $_GET['mail_id'];
 $query = "SELECT * FROM quarantine WHERE mail_id = '$mail_id'";
 if ($dbconfig == "mysqli") {
