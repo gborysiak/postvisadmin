@@ -18,7 +18,7 @@ require_once("functions.inc.php");
 </head>
 
 <body>
-<? 
+<?php
 
 
 $mail_id = $_GET['mail_id'];
@@ -40,9 +40,11 @@ if ($dbconfig == "mysqli") {
 $params['include_bodies'] = false;
 $params['decode_bodies']  = true;
 $params['decode_headers'] = true;
-$params['input']          = $string;
-$params['crlf']           = "\r\n";
-$structure = Mail_mimeDecode::decode($params);
+#$params['input']          = $string;
+#$params['crlf']           = "\r\n";
+#$structure = Mail_mimeDecode::decode($params);
+$mail_decode = new Mail_mimeDecode($string);
+$structure = $mail_decode->decode($params);
 $headers = $structure->headers;
 $received = $structure->headers["received"];
 //print_r($headers);
@@ -55,7 +57,7 @@ $received = $structure->headers["received"];
 
 <table width="900" border="1" align="center" cellpadding="1" cellspacing="1" class="main">
   
-    <?
+    <?php
 	foreach ($headers as $key => $value) {
 	if ($key == "received") {
 		if (is_array($received)) {
@@ -69,7 +71,27 @@ $received = $structure->headers["received"];
 			$value = str_replace("<", "&lt;", $value);
 			echo "<tr class='text'><td background='../images/butonbackground.jpg'>$key:</td><td class='footertext'>$value</td></tr>";
 		}
-	} else{
+	} elseif ($key=="x-amavis-alert") {
+		if (is_array($structure->headers["x-amavis-alert"])) {
+			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Amavis Alert</td><td class='footertext'>";
+			$amavisheaders = $structure->headers["x-amavis-alert"];
+			foreach ($amavisheaders as $key => $value) {
+				$value = str_replace("<", "&lt;", $value);
+				echo "$value<br /><br />";
+			}
+			echo "</td></tr>";
+		} else {
+		$value = str_replace("<", "&lt;", $value);
+		echo "<tr class='text'><td background='../images/butonbackground.jpg'>Amavis Alert</td><td class='footertext'>$value</td></tr>";
+		}
+	} elseif ($key=="x-spam-status") {
+		if (is_array($structure->headers["x-spam-status"])) {
+			$xspamstatus = $structure->headers["x-spam-status"];
+			echo "<tr class='text'><td background='../images/butonbackground.jpg'>$key:</td><td class='footertext'>" . $xspamstatus[0] . "</td></tr>";
+		} else {
+			echo "<tr class='text'><td background='../images/butonbackground.jpg'>$key:</td><td class='footertext'>$value</td></tr>";
+		}
+	} else {
 		
 		$value = str_replace("<", "&lt;", $value);
 		echo "<tr class='text'><td background='../images/butonbackground.jpg'>$key:</td><td class='footertext'>$value</td></tr>";

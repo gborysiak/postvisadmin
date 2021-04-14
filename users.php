@@ -78,7 +78,7 @@ $maxaccounts = $_POST['maxaccounts'];
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title><? echo "PostVis Admin - Domain Details: $domain"; ?></title>
+<title><?php echo "PostVis Admin - Domain Details: $domain"; ?></title>
 <style type="text/css">
 <!--
 .style5 {font-family: Verdana; font-size: 9px; }
@@ -115,8 +115,8 @@ function roll(obj, highlightcolor, textcolor){
     </div></td>
   </tr>
   <tr>
-    <td valign="top">  <? include('menu.php'); ?><br />    </td>
-    <td valign="top" class="main"><? 
+    <td valign="top">  <?php include('menu.php'); ?><br />    </td>
+    <td valign="top" class="main"><?php 
 	 
 if ($domaininfo->maxalias == 0) {
 	$maxalias = "Unlimited";
@@ -132,7 +132,7 @@ if ($domaininfo->maxaccounts == 0) {
 	  
 	  ?>
       
-      <? 
+      <?php 
 
 if (isset($error)) {
 	echo "<table class='sample' width='100%'><tr><td class='text' width='22'>$error</td></tr></table>";
@@ -142,9 +142,9 @@ if (isset($error)) {
 ?>
       <table width="100%" border="0" cellspacing="0" cellpadding="0" class="main">
         <tr>
-          <td class="text"><? echo "Domain Details: " . $domaininfo->domain; ?></td>
-          <td class="text"><? echo "Aliases: " . $domaininfo->aliascount . "/" . $maxalias; ?></td>
-          <td class="text"><? echo "Accounts: " . $domaininfo->numberaccounts . "/" . $maxaccounts; ?>		  </td>
+          <td class="text"><?php echo "Domain Details: " . $domaininfo->domain; ?></td>
+          <td class="text"><?php echo "Aliases: " . $domaininfo->aliascount . "/" . $maxalias; ?></td>
+          <td class="text"><?php echo "Accounts: " . $domaininfo->numberaccounts . "/" . $maxaccounts; ?>		  </td>
         </tr>
       </table>
 	  <p>
@@ -233,7 +233,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
           <tr>
             <td colspan="3" bgcolor="#003366"><div align="center" class="boldwhitetext">Add User </div></td>
           </tr>
-		  <? if (isset($useradd)) {
+		  <?php if (isset($useradd)) {
 		  		echo $useradd;
 			}
 			?>
@@ -241,13 +241,13 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
 		  
           <tr>
             <td class="text">Full Name </td>
-            <td class="text"><input name="name" type="text" class="style5" id="name" value="<? echo $_POST['name'];?>" /></td>
+            <td class="text"><input name="name" type="text" class="style5" id="name" value="<?php echo $_POST['name'];?>" /></td>
             <td width="42%" class="text"><input name="addusername" type="hidden" id="addusername" /></td>
           </tr>
           <tr>
             <td width="28%" class="text">Username</td>
-            <td width="30%" class="text"><input name="user" type="text" class="style5" id="user"  value="<? echo $_POST['user'];?>"/></td>
-            <td class="text"><? 
+            <td width="30%" class="text"><input name="user" type="text" class="style5" id="user"  value="<?php echo $_POST['user'];?>"/></td>
+            <td class="text"><?php 
 			
 			
 						echo "@$domain";
@@ -255,13 +255,13 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
 					
 			
 			?>
-                      <input name="domain" type="hidden" id="domain" value="<? echo $domain; ?>" /></td>
+                      <input name="domain" type="hidden" id="domain" value="<?php echo $domain; ?>" /></td>
           </tr>
           <tr>
             <td class="text">Password</td>
             <td class="text"><input name="pass" type="password" class="style5" id="pass" /></td>
-            <td class="text"><input name="numberaccounts" type="hidden" id="numberaccounts" value="<? echo $domaininfo->numberaccounts ?>" />
-            <input name="maxaccounts" type="hidden" id="maxaccounts" value="<? echo $domaininfo->maxaccounts; ?>" /></td>
+            <td class="text"><input name="numberaccounts" type="hidden" id="numberaccounts" value="<?php echo $domaininfo->numberaccounts ?>" />
+            <input name="maxaccounts" type="hidden" id="maxaccounts" value="<?php echo $domaininfo->maxaccounts; ?>" /></td>
           </tr>
           <tr>
             <td class="text">Retype Password </td>
@@ -276,7 +276,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
           <tr>
             <td class="text">Quota</td>
             <td class="text"><label>
-              <input name="quota" type="text" class="style5" id="quota" value="<? echo $domaininfo->quota; ?>"/>
+              <input name="quota" type="text" class="style5" id="quota" value="<?php echo $domaininfo->quota; ?>"/>
             </label></td>
             <td class="text"><em>Can not be higher than default</em></td>
           </tr>
@@ -284,7 +284,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
             <td class="text">&nbsp;</td>
             <td class="text">Default Amavis Settings: </td>
             <td class="text"><select name="policy_id" class="text" id="policy_id">
-              <? 
+              <?php 
 			$policyquery = "SELECT * FROM policy";
 			$previouspolicy = $_POST['policy_id'];
 			if ($dbconfig == "mysqli") {
@@ -329,7 +329,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
           <tr>
             <td colspan="2" bgcolor="#003366"><div align="center" class="boldwhitetext">Add Alias </div></td>
           </tr>
-		  <? if (isset($aliasadd)) {
+		  <?php if (isset($aliasadd)) {
 		  		echo $aliasadd;
 			}
 			?>
@@ -338,7 +338,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
           <tr>
             <td class="text">Email Address:</td>
             <td width="63%" class="text"><input name="address" type="text" class="style5" id="address" />
-              <? 
+              <?php 
 			
 			
 						echo "@" . $_SESSION['domain'];
@@ -346,14 +346,14 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
 					
 			
 			?>
-              <input name="domain" type="hidden" id="domain" value="<? echo $_SESSION['domain']; ?>" />
+              <input name="domain" type="hidden" id="domain" value="<?php echo $_SESSION['domain']; ?>" />
               <input name="addalias" type="hidden" id="addalias" /></td>
           </tr>
           <tr>
             <td width="37%" class="text">Aliased to: </td>
             <td class="text"><input name="aliased" type="text" class="style5" id="aliased" />
-            <input name="aliascount" type="hidden" id="aliascount" value="<? echo $domaininfo->aliascount; ?>" />
-            <input name="maxalias" type="hidden" id="maxalias" value="<? echo $domaininfo->maxalias; ?>" /></td>
+            <input name="aliascount" type="hidden" id="aliascount" value="<?php echo $domaininfo->aliascount; ?>" />
+            <input name="maxalias" type="hidden" id="maxalias" value="<?php echo $domaininfo->maxalias; ?>" /></td>
           </tr>
           <tr>
             <td colspan="2" background="images/butonbackground.jpg" class="text"><div align="center">

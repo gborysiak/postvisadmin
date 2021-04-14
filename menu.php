@@ -7,10 +7,12 @@
         <td class="text"  ><img src="images/policies.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>quarantine.php">Quarantine</a></td>
       </tr>
+      <!--
       <tr>
         <td height="28" class="text"  ><img src="images/email.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>users.php">Mailboxes</a></td>
-  </tr>
+      </tr>
+      -->
       <tr>
         <td class="text"  ><img src="images/logout.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>logout.php">Logout</a></td>

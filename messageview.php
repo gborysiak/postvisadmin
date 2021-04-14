@@ -66,9 +66,10 @@ if ($dbconfig == "mysqli") {
 $params['include_bodies'] = false;
 $params['decode_bodies']  = true;
 $params['decode_headers'] = true;
-$params['input']          = $string;
-$params['crlf']           = "\r\n";
-$structure = Mail_mimeDecode::decode($params);
+#$params['input']          = $string;
+#$params['crlf']           = "\r\n";
+$mail_decode = new Mail_mimeDecode($string);
+$structure = $mail_decode->decode($params);
 $headers = $structure->headers;
 $received = $structure->headers["received"];
 $mail_id = $_GET['mail_id'];
@@ -96,9 +97,17 @@ foreach ($headers as $key => $value) {
 		$value = str_replace("<", "&lt;", $value);
 		echo "<tr class='text'><td background='..images/butonbackground.jpg'>Spam</td><td class='footertext'>$value</td></tr>";
 	} elseif ($key == "x-spam-status") {
+		if (is_array($structure->headers["x-spam-status"])) {
+			$xspamstatus = $structure->headers["x-spam-status"];
+			$value = str_replace("<", "&lt;", $xspamstatus[0]);
+			$sa_tests = $value;
+		} else {
+			$value = str_replace("<", "&lt;", $value);
+			$sa_tests = $value;
+		}
 		//Grab Spam Report Header for parsing later
-		$sa_tests = substr(strrchr($value, 'tests'), 4);  
-		$value = str_replace("<", "&lt;", $value);
+		$sa_tests = substr(strrchr($sa_tests, 'tests'), 4);  
+		
 	} elseif ($key == "x-spam-score") {
 		$value = str_replace("<", "&lt;", $value);
 		echo "<tr class='text'><td background='..images/butonbackground.jpg'>Spam Score</td><td class='footertext'>$value</td></tr>";
@@ -122,6 +131,7 @@ foreach ($headers as $key => $value) {
 }
 echo "<tr class='boldwhitetext'><td colspan='2' bgcolor='#003366'><center>Spamassassin Report<center></td></tr>";
 echo "<tr><table width='100%' class=main><tr class='boldtext' background='..images/butonbackground.jpg'><td>Rule</td><td>Score</td><td>Description</td></tr>";
+/*
 if ($dbconfig == "mysqli") { 
 		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 		
@@ -137,6 +147,8 @@ $sa_tests = str_replace("]","",$sa_tests);
 $sa_tests = str_replace(" ","",$sa_tests);
 $sa_rules = explode(",",$sa_tests);
 $sa_count = count($sa_rules);
+
+$total = 0;
 for ($i=0;$i<$sa_count;$i++) {
 	$sa_rule = explode("=",$sa_rules[$i]);
 	$query = "SELECT * FROM sa_rules WHERE rule = '$sa_rule[0]'";
@@ -148,10 +160,12 @@ for ($i=0;$i<$sa_count;$i++) {
 			$results = mysql_query($query);
 			$row = mysql_fetch_array($results, MYSQL_NUM);
 		}
+	$total = $total + $sa_rule[1];
 	echo "<tr class='footertext'><td>$sa_rule[0]</td><td>$sa_rule[1]</td><td>$row[1]</td></tr>";
 	
 }
 echo "";
+*/
 	?>
 </table>
     </div></td>
