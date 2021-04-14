@@ -111,6 +111,6 @@ $wb_query = "SELECT wblist.rid, wblist.sid, wblist.wb, mailaddr.email as sender,
 
 $footer = "<center><div class='footer'>Powered by Postvis Admin 1.5</div></center>";
 
-$quarantine_query = "SELECT DISTINCT quarantine.mail_id, secret_id, rs, bspam_level, (UNIX_TIMESTAMP(time_iso) + (3600 * $time_offset)) AS time_iso, SUBSTRING(sender.email,1,35) AS sender, SUBSTRING(recipient.email,1,28) AS recipient, size, content AS quaratinefor, SUBSTRING( subject, 1, 25) AS subject FROM `quarantine` LEFT JOIN msgrcpt ON msgrcpt.mail_id = quarantine.mail_id LEFT JOIN msgs ON msgs.mail_id = quarantine.mail_id LEFT JOIN maddr AS recipient ON msgrcpt.rid = recipient.id LEFT JOIN maddr AS sender ON msgs.sid = sender.id WHERE msgrcpt.rs != 'R' AND msgrcpt.rs != 'D'";
+$quarantine_query = "SELECT DISTINCT quarantine.mail_id, secret_id, rs, bspam_level, (UNIX_TIMESTAMP(time_iso) + (3600 * $time_offset)) AS time_iso, SUBSTRING(sender.email,1,35) AS sender, SUBSTRING(recipient.email,1,28) AS recipient, size, msgs.content AS quaratinefor, SUBSTRING( subject, 1, 25) AS subject FROM `quarantine` LEFT JOIN msgrcpt ON msgrcpt.mail_id = quarantine.mail_id LEFT JOIN msgs ON msgs.mail_id = quarantine.mail_id LEFT JOIN maddr AS recipient ON msgrcpt.rid = recipient.id LEFT JOIN maddr AS sender ON msgs.sid = sender.id WHERE msgrcpt.rs != 'R' AND msgrcpt.rs != 'D'";
 
 ?>

@@ -170,13 +170,32 @@ if (isset($_GET['searchfield'])) {
       $bindparam = $bindparam . "s";
 	}
 }
-//$query = $quarantine_query;
+$query = $quarantine_query;
 $quarantine_query = $quarantine_query . " ORDER BY time_iso DESC LIMIT $offset, $rowsPerPage ";
 
 if ($dbconfig == "mysqli") {
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 
+   // recherche du nombre de lignes total
+   if( $stmt = $mysqli->prepare($query) ) {
+      //echo $query;
+      //echo $_SESSION['username'];
+      if( strlen($bindparam) == 1 ) {
+         $stmt->bind_param($bindparam, $_SESSION['username']);
+      } else {
+         $stmt->bind_param($bindparam, $_SESSION['username'], $search);
+      }
+         $stmt->execute();
+         $results = $stmt->get_result();
+            $numrows = $results->num_rows;
+            $results->close();
+            //echo "numrows " .  $numrows;
 
+   } else {
+      die("3 " . $mysqli->error);
+   }
+         
+   //echo "$$ 2";
    if( $stmt = $mysqli->prepare($quarantine_query) ) {
       if( strlen($bindparam) == 1 ) {
          $stmt->bind_param($bindparam, $_SESSION['username']);
@@ -184,10 +203,8 @@ if ($dbconfig == "mysqli") {
          $stmt->bind_param($bindparam, $_SESSION['username'], $search);
       }
       $stmt->execute();
-      
-      
       if ($quarantineresults = $stmt->get_result()) {
-         $numrows = $quarantineresults->num_rows;	
+             
          $i = 0;
          while ($row = $quarantineresults->fetch_assoc()) {
             
