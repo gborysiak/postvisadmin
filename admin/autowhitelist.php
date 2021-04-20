@@ -69,10 +69,7 @@ if (isset($_GET['email'])) {
 		$result = $mysqli->query($deletequery);
 		echo "<table class='sample' width='100%'><tr><td width='22'><img src='/images/ok.png' /></td><td class='text'>'$email' -- Record Deleted</td></tr></table>";
 	} else {
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-    	$result = mysql_query($deletequery);
-		echo "<table class='sample' width='100%'><tr><td width='22'><img src='/images/ok.png' /></td><td class='text'>'$email' -- Record Deleted</td></tr></table>";
+      die("Configuration error");
 	}
 }
 ?>
@@ -140,32 +137,12 @@ if ($dbconfig == "mysqli") {
 				echo "<tr class='style5' $background><td>".$rows["email"]."</td><td>".$rows["ip"]."</td><td>".$rows["count"]."</td><td>".$rows["totscore"]."</td><td>".$rows["lastupdate"]."</td><td><a href='$self?email=".$rows["email"]."&search=$search'>Remove<a></td></tr>";
 			}
 		} else {
-			echo "There was an error: " . $mysqli->error();
+			echo "There was an error: " . $mysqli->error;
 		}
 	$results->close();
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-    $result = mysql_query($query1);
-	$numrows = mysql_num_rows($result);
-	echo "";
-		if($results = mysql_query($query, $link)) {
-			
-			while ($rows = mysql_fetch_array($results, MYSQL_ASSOC)) {
-				if ($i == 1){
-					$background = "bgcolor='#F2F2F2'";
-					$i=0;
-				} else {
-					$background = "bgcolor = '#FFFFFF'";
-					$i=1;
-				}								
-				echo "<tr class='style5' $background><td>".$rows["email"]."</td><td>".$rows["ip"]."</td><td>".$rows["count"]."</td><td>".$rows["totscore"]."</td><td>".$rows["lastupdate"]."</td><td><a href='$self?email=".$rows["email"]."&search=$search'>Remove<a></td></tr>";
-			}
-		} else {
-			echo "There was an error: " . mysql_error();
-		}
-	mysql_free_result($results);
+   die("Configuration error");
 }
         
         

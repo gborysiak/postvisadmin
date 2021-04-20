@@ -1,6 +1,6 @@
 <?php
 
- require_once("../config/config.php");
+require_once("../config/config.php");
 require '../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {
@@ -78,23 +78,7 @@ if ($dbconfig == "mysqli") {
 	$results->close();
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-		if($results = mysql_query($query)) {
-			$rows = mysql_fetch_array($results, MYSQL_NUM);
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Spam Count:</td><td>$rows[2]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Ham Count:</td><td>$rows[3]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Token Count:</td><td>$rows[4]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Last Expire:</td><td>$rows[5]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Last At Time Delta:</td><td>$rows[6]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Last Expire Reduce:</td><td>$rows[7]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Oldest Token Age:</td><td>$rows[8]</td></tr>";
-			echo "<tr class='text'><td background='../images/butonbackground.jpg'>Newest Token Age:</td><td>$rows[9]</td></tr>";
-			
-		} else { 
-			echo "There was an error: " . mysql_error();
-		}
-	mysql_free_result($results);
+   die("Configuration error");
 }
 
         

@@ -1,6 +1,6 @@
 <?php
 
- require_once("../config/config.php");
+require_once("../config/config.php");
 require '../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {
@@ -32,16 +32,7 @@ if (isset($_POST['deletelist'])) {
 			echo "There was a problem removing listed recorded, please try again:<br>" . $mysqli->error . "<br>Query: " . $query;
 		}
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$results = mysql_query($query);
-		$rows_affected = mysql_affected_rows($link);
-		if ($rows_affected == 1) { 
-			$url = $siteurl . "/admin/whitelist.php";
-			header('Location:'. $url);
-		} else {
-			echo "There was a problem removing listed recorded, please try again:<br>" . mysql_error($link) . "<br>Query: " . $query;
-		}
+      die("Configuration error");
 	}
 }
 
@@ -103,19 +94,7 @@ if ($dbconfig == "mysqli") {
 			}
 	}
 } else {
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	if ($results=mysql_query($wb_query)) {
-  		$rows_affected = mysql_num_rows($results);
-			if ($rows_affected > 0) {
-				while ($row=mysql_fetch_array($results, MYSQL_NUM)) {
-					echo "Sender = $row[3]<br>Recipient: $row[4]<br>Listed as: $row[2]";
-				}
-			} else {
-				echo "<tr class='text'><td colspan='3'><center>Nothing Selected</center></td></tr>";
-			}
-	}
-}
+   die("Configuration error");}
 ?>
            </span> <br />
             <label>

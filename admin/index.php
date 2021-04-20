@@ -1,6 +1,6 @@
 <?php
 
- require_once("../config/config.php");
+require_once("../config/config.php");
 require '../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {

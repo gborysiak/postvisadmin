@@ -1,3 +1,8 @@
+<?php
+require_once("../config/config.php");
+
+
+?>
 <table width="100%" class="sample" >
 <tr>
   <td class="text"  ><img src="<?php echo $siteurl; ?>images/Home1.png" width="22" height="22" /></td>
