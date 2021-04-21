@@ -55,13 +55,6 @@ if (isset($_POST['login'])) {
          }            
 		} else { 
          die("configuration error");
-         /*
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-			$row = mysql_fetch_array($result, MYSQL_NUM);
-			$numrows = mysql_num_rows($result);
-         */
 		}
 
       if( $numrows > 0 and ! password_verify($password, $row["password"]) ) {
@@ -83,7 +76,6 @@ if (isset($_POST['login'])) {
             }               
 			} else { 
             die("configuration error");
-				//$loginupdate = mysql_query($updatequery);
 			}
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $row["password"];
@@ -112,7 +104,6 @@ if (isset($_POST['login'])) {
             }   
 			} else { 
             die("configuration error");
-				//$loginupdate = mysql_query($updatequery);
 			}
 	
 			$_SESSION['username'] = $username;
@@ -130,7 +121,6 @@ if (isset($_POST['login'])) {
 		$mysqli->close();
 	} else {
       die("configuration error");
-		//mysql_free_result($result);
 	}
 }
 }

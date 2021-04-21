@@ -1,2 +1,6 @@
 /config/config.php
 /vendor/*
+/composer.json
+/composer.lock
+/psalm.xml
+/todo.txt

@@ -26,11 +26,7 @@ if (isset($_POST['editalias'])) {
 		$rowsaffected = $mysqli->affected_rows;
 		$mysqli->close();
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($query1);
-		$rowsaffected = mysql_affected_rows($link);
-		mysql_close($link);
+      die("Configuration error");
 	}		
 		
 		$error = "Alias Updated: $rowsaffected Modified";

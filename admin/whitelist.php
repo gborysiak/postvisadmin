@@ -82,12 +82,7 @@ if ($dbconfig == "mysqli") {
 		echo "<option value='$row[0]'>$row[1]</option>";
 	}
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($query);
-		while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-			echo "<option value='$row[0]'>$row[1]</option>";
-		}
+   die("Configuration error");
 }
 
 ?>
@@ -146,16 +141,7 @@ if ($dbconfig == "mysqli") {
 			}
 	}
 } else {
-	if ($results = mysql_query($whitelist_query)) {
-		$rows_affected = mysql_num_rows($results);
-			if ($rows_affected > 0) { 
-				while ($row=mysql_fetch_array($results,MYSQL_NUM)) {
-					echo "<tr class='text'><td><center>$row[3]</center></td><td><center>$row[4]</center></td><td><center><a href = 'deletelist.php?rid=$row[0]&sid=$row[1]&wb=$row[2]'>Delete</a></center></td></tr>";
-				}
-			} else {
-				echo "<tr class='text'><td colspan='3'><center>Whitelist is Empty</center></td></tr>";
-			}
-	}
+   die("Configuration error");
 }
 		  
 		 
@@ -187,17 +173,7 @@ if ($dbconfig == "mysqli") {
 		}
 	}
 } else { 
-	if ($results = mysql_query($blacklist_query)) {
-		$rows_affected = mysql_num_rows($results);
-			if ($rows_affected > 0) { 
-				while ($row=mysql_fetch_array($results,MYSQL_NUM)) {
-					echo "<tr class='text'><td><center>$row[3]</center></td><td><center>$row[4]</center></td><td><center><a href = 'deletelist.php?rid=$row[0]&sid=$row[1]&wb=$row[2]'>Delete</a></center></td></tr>";
-				}
-				mysql_close($link);
-			} else {
-				echo "<tr class='text'><td colspan='3'><center>Whitelist is Empty</center></td></tr>";
-			}
-	}
+   die("Configuration error");
 }
 		  
 		  

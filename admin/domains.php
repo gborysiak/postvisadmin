@@ -87,10 +87,7 @@ if (isset($_POST['editdomain'])) {
 		$mysqli->close();
 		
 	} else {
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($editdomainquery) or die('Query failed: ' . mysql_error());
-		$rows_affected = mysql_affected_rows();
+      die("configuration error");
 	}
 	echo "<table width='100%' class='sample'><tr><td width='22'><img src='/images/ok.png' /></td><td>Updated Domain: $domain</td></tr></table>";
 }
@@ -161,26 +158,7 @@ if (isset($_POST['adddomain']))  {
 			}
 			$mysqli->close();
 		} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($insertquery) or die('Query failed: ' . mysql_error());
-		$rowsaffected  = mysql_affected_rows();
-			if ($rowsaffected == '1') {
-				echo "<br />Admin added for new domain";
-				$postmastercreate =  mysql_query($postfixinsert);
-				$postcreate = mysql_affected_rows();
-				$postmasteralias = mysql_query($postfixaliasinsert);
-				$aliascreate = mysql_affected_rows();
-				
-				if ($postcreate == '1' and $aliascreate == '1') {
-						echo "<br />Postmaster Account Created";
-						$postmasterfilter = mysql_query($amavisinsert);
-						$filteraffected = mysql_affected_rows();
-							if ($filteraffected  == '1') {
-										echo "<br />Set Postmaster to Unsensored filtering</center></div>";
-							}
-				}
-			}
+         die("configuration error");
 		}	
 	}	
 }	
@@ -207,13 +185,7 @@ if ($dbconfig == "mysqli") {
 		echo '<font color="red">MySQL Error: ' . $mysqli->error . '<br /><br /> Query: ' . $domainlistquery . '</font>';
 	}
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-		if ($results = mysql_query($domainlistquery)) {
-			while ($rowdomains = mysql_fetch_array($results, MYSQL_NUM)) {
-				echo '<tr class="text"><td><a href="users.php?domain=' , $rowdomains[0] . '">' . $rowdomains[0] . '</a></td><td><center><a href="domains.php?edit=Yes&domain=' . $rowdomains[0] . '">Edit</a> / <a href="deletedomain.php?domain=' . $rowdomains[0] . '">Delete</a></center></td></tr>';
-			}
-		}
+   die("configuration error");
 }
 ?>			 
           </table>

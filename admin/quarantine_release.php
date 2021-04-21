@@ -63,11 +63,7 @@ if (isset($_GET['mail_id'])) {
 				$mysqli->close();
 			}		
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			if ($results = mysql_query($query)) {
-				$row_affected = mysql_affected_rows($link);
-			}
+         die("Configuration error");
 		}
 
 		if ($request == 'release') {

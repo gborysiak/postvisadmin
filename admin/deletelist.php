@@ -94,7 +94,8 @@ if ($dbconfig == "mysqli") {
 			}
 	}
 } else {
-   die("Configuration error");}
+   die("Configuration error");
+}
 ?>
            </span> <br />
             <label>

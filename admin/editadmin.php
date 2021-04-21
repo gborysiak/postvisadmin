@@ -47,11 +47,7 @@ if (isset($_POST['editadmin'])) {
 			$rows_affected = $mysqli->affected_rows;
 			$mysqli->close();
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($query);
-			$rows_affected = mysql_affected_rows($link);
-			
+         die("configuration error");
 		}
 		
 		if ($rows_affected == 1) {
@@ -73,11 +69,7 @@ if (isset($_POST['editadmin'])) {
 			$rows_affected = $mysqli->affected_rows;
 			$mysqli->close();
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($query);
-			$rows_affected = mysql_affected_rows($link);
-			mysql_free_result($result);
+         die("configuration error");
 		}		
 		if ($rows_affected == 1) {
 			$error = "<img src='/images/ok.png' /></td><td>Settings and Password Updated.";
@@ -156,18 +148,9 @@ if ($dbconfig == "mysqli") {
 	$adminresult= $mysqli->query($query);
 	$row1 = $adminresult->fetch_array(MYSQLI_NUM);
 } else {
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$adminresult = mysql_query($query);
-	$row1 = mysql_fetch_array($adminresult, MYSQL_NUM);
+   die("configuration error");
 }
-
-
-
-
-
-
-			
+		
 ?>			</td>
           </tr>
           <tr>
@@ -206,15 +189,7 @@ if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
 } else { 
-	$result = mysql_query($query);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-		if ($row[0] == $_GET['domain']) {
-			echo "<option value='$row[0]' selected>$row[0]</option>'";
-		} else {
-			echo "<option value='$row[0]'>$row[0]</option>'";
-		}
-	}
-	mysql_free_result($result);
+   die("configuration error");
 }
 ?>
 			  </select>

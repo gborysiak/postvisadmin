@@ -107,13 +107,7 @@ if (isset($_POST['addpolicy'])) {
          echo '<font color="red">MySQL Error: ' . $mysqli->error . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
       }
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		if ($result = mysql_query($addpolicyquery)) { 
-			$error = "<table width='100%' class='sample'><tr><td width='22'><img src='../images/ok.png' /></td><td class='text'>Policy Successfully Inserted: $policyname</td></tr></table>";
-		} else {
-			echo '<font color="red">MySQL Error: ' . mysql_error($link) . '<br /><br /> Query: ' . $addpolicyquery . '</font>';
-		}
+      die("configuration error");
 	}
 } ?>		  </td>
         </tr>
@@ -159,24 +153,7 @@ if ($dbconfig == "mysqli") {
 		echo '<font color="red">MySQLi Error: <br /><br /> Query: ' . $domainlistquery . '</font>';
 	}
 } else { 
-	if ($policyresults = mysql_query($policyquery)) { 
-		echo '<select name="policy" class="style5" id="policy">';
-		while ($rowpolicy = mysql_fetch_array($policyresults, MYSQL_NUM)) { 
-			if (isset($_POST['policy'])) {
-				$policy = $_POST['policy'];
-				if ($policy == $rowpolicy[0]) {
-					echo '<option value="' . $rowpolicy[0] . '" selected>' . $rowpolicy[1] . '</option>';
-				} else {
-					echo '<option value="' . $rowpolicy[0] . '">' . $rowpolicy[1] . '</option>';
-				}
-			} else {
-				echo '<option value="' . $rowpolicy[0] . '" selected>' . $rowpolicy[1] . '</option>';
-			}
-		}
-		echo '</select>';
-	} else { 
-		echo '<font color="red">MySQL2 Error: ' . mysql_error($link) . '<br /><br /> Query: ' . $domainlistquery . '</font>';
-	}
+   die("configuration error");
 }
 
 ?>
@@ -274,11 +251,7 @@ if ($dbconfig == "mysqli") {
 	  		echo "<table width='100%'> class='sample'<tr><td width='22'><img src='../images/no.png' /></td><td>MySQL Error: " . $mysqli->error . "</td></tr></table>";
 	   	}
 	} else { 
-		if ($result = mysql_query($query)) { 
-			echo "<table width='100%'> class='sample'<tr><td width='22'><img src='../images/ok.png' /></td><td>Policy Successfully Updated</td></tr></table>";
-		} else {
-	  		echo "<table width='100%'> class='sample'<tr><td width='22'><img src='../images/no.png' /></td><td>MySQL Error: " . mysql_error($link) . "</td></tr></table>";
-	   	}
+      die("configuration error");
 	}
 }
 	  ?>
@@ -348,8 +321,7 @@ if ($dbconfig == "mysqli") {
          $row_policy = $result->fetch_array(MYSQLI_BOTH);
          $result->free();
       } else { 
-         $policyedit = mysql_query($poilicyquery);
-         $row_policy = mysql_fetch_array($policyedit, MYSQLI_BOTH);
+         die("configuration error");
       }	  
 ?>
         <form id="form2" name="form2" method="post" action="">
@@ -504,10 +476,7 @@ if ($dbconfig == "mysqli") {
       </form>
         <?php 
 		} else {
-	
-		 
-	
-		
+
 		// Show if recordset not empty ?>
         
 <form id="form3" name="form3" method="post" action="">

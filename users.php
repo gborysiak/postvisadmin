@@ -189,41 +189,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='footertext'>Email
 	echo "</table>";
 	
 } else {
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-		if ($resultalias = mysql_query($aliasquery)) {
-			while ($rowalias = mysql_fetch_array($resultalias, MYSQL_NUM)) {
-				echo "<tr class='style5'><td>$rowalias[0]</td><td>$rowalias[1]</td><td>$rowalias[4]</td><td><a href='editalias.php?address=$rowalias[0]&goto=$rowalias[1]&domain=$domain'>Edit</a> / <a href='delalias.php?address=$rowalias[0]&goto=$rowalias[1]&domain=$domain'>Delete</a></td></tr>";
-			}
-		}
-echo "</table><br />";
-echo "<table class='main' width='100%'><tr><td colspan='6' class='boldwhitetext' bgcolor='#003366'>User List</td></tr>";
-echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Address</td><td class='text'>Name</td><td class='text'>Last Modified</td><td class='text'>Active</td><td class='text'>Amavis Setup</td><td class='text'>Edit/Delete</td></tr>";
-	
-	$query = "SELECT * FROM mailbox WHERE domain = '$domain'";
-	
-	if ($result = mysql_query($query)) {
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			echo "<tr class='style5' $background><td>".$row['username']."</td><td>".$row['name']."</td><td>".$row['modified']."</td><td>";
-				if ($row['active'] == 1) {
-					echo "<center><img src='images/ok.png'  height='14' width='14'/></center></td>";
-				} else {
-					echo "<center><img src='images/no.png'  height='14' width='14'/></center></td>";
-				}
-			$query1 = "SELECT * FROM users LEFT JOIN policy ON policy.id = users.policy_id WHERE email = '".$row['username']."'";
-			$result1 = mysql_query($query1);
-				if (mysql_num_rows($result1) > 0) {
-					$row1 = mysql_fetch_array($result1, MYSQL_ASSOC);
-					echo "<td><center>".$row1['policy_name']."</center></td>";
-				} else {
-					echo "<td><center><img src='..images/no.png' width='22' height='22' /></center></td>";
-				}
-			echo "<td><a href='edituser.php?username=".$row['username']."&domain=$domain'>Edit</a> / <a href='deluser.php?username=".$row['username']."&domain=$domain'>Delete</a></td></tr>";
-			
-		}
-	}
-	echo "</table>";
-	
+   die("Configuration error");
 }	
 ?>
 	    <br />
@@ -302,16 +268,7 @@ echo "<tr background='..images/butonbackground.jpg'><td class='text'>Email Addre
 				}
 				$mysqli->close();
 			} else {
-				if ($resultdomains = mysql_query($policyquery)) {
-					while ($rowdomains = mysql_fetch_array($resultdomains, MYSQL_NUM)) {
-						if ($previouspolicy == $rowdomains[0]) {
-							echo "<option value='$rowdomains[0]' selected>$rowdomains[1]</option>";
-						} else {
-							echo "<option value='$rowdomains[0]'>$rowdomains[1]</option>";
-						}
-					}
-				}
-				mysql_close($link);
+            die("Configuration error");
 			}
 			?>
                         </select>

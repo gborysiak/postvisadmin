@@ -41,11 +41,7 @@ if (isset($_POST['edituser'])) {
 			$error = $error . "<img src='/images/ok.png' /></td><td>Filtering Options Adjusted";
 			$mysqli->close();
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');	
-			$result = mysql_query($postfixquery);
-			$result = mysql_query($amavisquery);
-			$error = $error . "<img src='/images/ok.png' /></td><td>Filtering Options Adjusted";
+         die("configuration error");
 		}
 		
 	} else {
@@ -65,11 +61,7 @@ if (isset($_POST['edituser'])) {
 				$error = "<img src='/images/ok.png' /></td><td>Password and Information Updated.";
 				$mysqli->close();
 			} else  {
-				$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-				mysql_select_db($postfixdatabase) or die('Could not select database');	
-				$result = mysql_query($query);
-				$result = mysql_query($amavisquery);
-				$error = "<img src='/images/ok.png' /></td><td>Password and Information Updated.";
+            die("configuration error");
 			}
 		} else { 
 		
@@ -193,16 +185,7 @@ if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
 } else {
-	
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($policyquery);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-		if ($userinfo->filterpolicy == $row[1]) {
-			echo '<option value="' . $row[0] . '" selected >' . $row[1] . '</option>';
-		} else {
-			echo "<option value='$row[0]'>$row[1]</option>";
-		}
-	}
+   die("configuration error");
 }
 			?>
 			</select>

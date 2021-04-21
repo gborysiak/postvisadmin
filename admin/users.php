@@ -21,7 +21,7 @@ if (isset($_POST['addalias'])) {
 	$aliascount = $_POST['aliascount'];
 	$maxalias = $_POST['maxalias'];
 	
-	if ($address == "" and aliased == "") {
+	if ($address == "" and $aliased == "") {
 		$error = "<img src='../images/no.png' /></td><td class='errortext'>Add Alias Error: No Address Provided! Please try again.";
 	} elseif ($aliascount >= $maxalias and $maxalias !=0) {
 		$error = "<img src='../images/no.png' /></td><td class='errortext'>Add Alias Error: Maximum Aliases in use! Please remove one then try again.";
@@ -179,13 +179,7 @@ if ($dbconfig == "mysqli") {
 			}
 		}
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-		if ($resultalias = mysql_query($aliasquery)) { 
-			while ($rowalias = mysql_fetch_array($resultalias, MYSQL_ASSOC)) {
-				echo "<tr class='style5'><td>".$rowalias['address']."</td><td>".$rowalias['goto']."</td><td>$rowalias[4]</td><td><a href='editalias.php?address=".$rowalias['address']."&goto=".$rowalias['goto']."&domain=$domain'>Edit</a> / <a href='delalias.php?address=".$rowalias['address']."&goto=".$rowalias['goto']."&domain=$domain'>Delete</a></td></tr>";
-			}
-		}
+   die("Configuration error");
 }
 	
 echo "</table><br />";
@@ -222,33 +216,7 @@ if ($dbconfig == "mysqli") {
 		}			
 	}
 } else { 
-	if ($result = mysql_query($query)) { 
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {	
-			if ($i == 1){
-				$background = "bgcolor='#F2F2F2'";
-					$i=0;
-			} else {
-				$background = "bgcolor = '#FFFFFF'";
-					$i=1;
-			}
-			
-			echo "<tr class='style5' $background><td>".$row['username']."</td><td>".$row['name']."</td><td>".$row['modified']."</td><td>";
-				if ($row['active'] == 1) {
-					echo "<img src='../images/no.png' width='14' height='14'/></td>";
-				} else {
-					echo "<img src='../images/no.png' width='14' height='14'/></td>";
-				}
-			$query1 = "SELECT * FROM users LEFT JOIN policy ON policy.id = users.policy_id WHERE email = '".$row['username']."'";
-			$result1 = mysql_query($query1);
-				if (mysql_num_rows($result1) > 0) {
-					$row1 = mysql_fetch_array($result1, MYSQL_ASSOC);
-					echo "<td><center>".$row1['policy_name']."</center></td>";
-				} else {
-					echo "<td><center><img src='..../images/no.png' width='14' height='14' /></center></td>";
-				}
-			echo "<td><a href='edituser.php?username=".$row['username']."&domain=$domain'>Edit</a> / <a href='deluser.php?username=".$row['username']."&domain=$domain'>Delete</a></td></tr>";
-		}
-	}
+   die("Configuration error");
 }
 echo "</table>";
 	
@@ -315,15 +283,7 @@ if ($dbconfig == "mysqli") {
 		}
 	}
 } else {
-	if ($resultdomains = mysql_query($domainsquery)) { 
-		while ($rowdomains = mysql_fetch_array($resultdomains, MYSQL_NUM)) {
-			if ($previouspolicy == $rowdomains[0]) {
-				echo "<option value='$rowdomains[0]' selected>$rowdomains[1]</option>";
-			} else {
-				echo "<option value='$rowdomains[0]'>$rowdomains[1]</option>";
-			}
-		}
-	}
+   die("Configuration error");
 }
 			?>
             </select>            </td>

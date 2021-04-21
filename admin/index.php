@@ -145,15 +145,7 @@ echo "Check Disabled";
 	  	}
 	
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-		if ($results = mysql_query($quarantine_query)) {
-			$rowcount = mysql_num_rows($results);
-			echo $rowcount;
-		} else {
-		  	echo "Error in Query: " . mysql_error();
-	  	}
-	
+   die("configuration error");
 }
 ?>          </td>
         </tr>
@@ -170,13 +162,7 @@ if ($dbconfig == "mysqli") {
 	}
 	$mysqli->close();
 } else {
-	if ($results = mysql_query("SELECT * FROM users")) {
-		$rowcount = mysql_num_rows($results);
-		echo $rowcount;
-	} else {
-	  	echo "Error in Query: " . mysql_error();
-  	}
-	mysql_close($link);
+   die("configuration error");
 }
 ?>		</td>
         </tr>

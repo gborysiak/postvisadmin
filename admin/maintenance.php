@@ -63,9 +63,8 @@ if (isset($_POST['msglogcleanup'])) {
 			exit();
 		}
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-} 	
+   die("configuration error");
+ } 	
 	
 	if ($msglog == "yes") {
 		if ($dbconfig == "mysqli") { 
@@ -73,9 +72,7 @@ if (isset($_POST['msglogcleanup'])) {
 			$result = $mysqli->query($msgscleanup2);
 			
 		} else { 
-			$result = mysql_query($msgscleanup1);
-			$result = mysql_query($msgscleanup2);
-			
+         die("configuration error");
 		}
 	
 		echo "Mail Server log Cleaned up";
@@ -87,9 +84,7 @@ if (isset($_POST['msglogcleanup'])) {
 			$result = $mysqli->query($quarantinecleanup2);
 			$result = $mysqli->query($quarantinecleanup3);
 		} else {
-			$result = mysql_query($quarantinecleanup);
-			$result = mysql_query($quarantinecleanup2);
-			$result = mysql_query($quarantinecleanup3);
+         die("configuration error");
 		}
 		echo "Quarantine Cleaned up";
 	}
@@ -100,8 +95,7 @@ if (isset($_POST['msglogcleanup'])) {
 			$result = $mysqli->query($awlcleanup2);
 			$mysqli->close();
 		} else { 
-			$result = mysql_query($awlcleaup1);
-			$result = mysql_query($awlcleanup2);
+         die("configuration error");
 		}
 		echo "<br /><br />Auto-Whitelist is Cleaned up";
 	}	

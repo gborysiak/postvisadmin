@@ -33,12 +33,7 @@ if ($dbconfig == "mysqli") {
 	$string = $row["mail_text"];
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$results = mysql_query($query);
-	$row = mysql_fetch_array($results, MYSQL_ASSOC);
-	$string = $row["mail_text"];
-	mysql_close($link);
+   die("configuration error");
 }
 $params['include_bodies'] = true;
 $params['decode_bodies']  = true;

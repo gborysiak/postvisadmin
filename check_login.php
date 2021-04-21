@@ -31,12 +31,6 @@ if (!isset($_SESSION['username']) or !isset($_SESSION['password'])) {
       }
 	} else {
       die("configuration error");
-		/*
-      $link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-		$row = mysql_fetch_array($result, MYSQL_NUM);
-      */
 	}	
 	$dbpass1 = $row["password"];
 	$domain = $row["domain"];
@@ -64,7 +58,7 @@ if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
 } else {
-	mysql_free_result($result);
+   die("Configuration error");
 }	
 }
 

@@ -89,15 +89,7 @@ if ($dbconfig == "mysqli") {
 	  	}
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-		if ($results = mysql_query($quarantine_query)) {
-			$rowcount = mysql_num_rows($results);
-			echo $rowcount;
-		} else {
-		  	echo "HOly Shit batman it didn't work: " . $mysqli->error;
-	  	}
-	mysql_close($link);
+   die("Configuration error");
 }
 		  
 		  		  

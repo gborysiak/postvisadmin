@@ -103,24 +103,7 @@ if ($dbconfig == "mysqli") {
 	}
 
 } else { 
-	$count = 0;
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($query_clean);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-		if ($i == 1){
-			$background = "bgcolor='#F2F2F2'";
-			$i=0;
-		} else {
-			$background = "bgcolor = '#FFFFFF'";
-			$i=1;
-		}
-		echo "<tr $background><td class='style5'><div align='center'>$row[0]</div></td>";
-		echo "<td class='style5'><div align='center'>$row[1]</div></td>";
-		echo "<td class='style5'><div align='center'>$row[2]</div></td></tr>";
- 
-	}
-	
+   die("configuration error");
 }
 ?>
           </table></td>
@@ -153,26 +136,9 @@ if ($dbconfig == "mysqli") {
 		$domain = array_reverse($domain);
 		$domain = implode(".",$domain);
 		echo "<td class='style5'><div align='center'>$domain</div></td></tr>";
-
 	}
-	
 } else { 
-	$result = mysql_query($query_spamavg);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-		$count = $count + $row[0];
-		if ($i == 1){
-			$background = "bgcolor='#F2F2F2'";
-			$i=0;
-		} else {
-			$background = "bgcolor = '#FFFFFF'";
-			$i=1;
-		}
-		echo "<tr $background><td class='style5'><div align='center'>$row[0]</div></td>";
-		echo "<td class='style5'><div align='center'>$row[1]</div></td>";
-		echo "<td class='style5'><div align='center'>$row[2]</div></td></tr>";
-	
-	}
-	
+   die("configuration error");
 }
 ?>
           </table></td>
@@ -224,30 +190,7 @@ if ($dbconfig == "mysqli") {
         </tr>
 <? }
 } else {
-	$result = mysql_query($query_latestmail);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)) {	
-?>
-	<tr>
-          <td class="style5"><div align="center"><?php echo $row[0]; ?></div></td>
-          <td class="style5"><div align="center">
-              <? if ($row[2] == "C") {
-		  	echo "Clean";
-			} elseif ($row[2] == "S") {
-			echo "Spam Quarantined";
-			} elseif ($row[2] == "s") {
-			echo "Spam Delievered";
-			} elseif ($row[2] == "H") {
-			echo "Bad Headers";
-			} else {			
-			echo "Virus Quarantined";
-			}
-			?>
-          </div></td>
-          <td class="style5"><div align="center"><?php echo $row[9]; ?></div></td>
-          <td class="style5"><div align="center"><?php echo $row[5]; ?></div></td>
-          <td class="style5"><div align="center"><?php echo $row[7]; ?></div></td>
-        </tr>
-<? }
+   die("configuration error");
 }
 ?>
       </table>
@@ -263,7 +206,7 @@ if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
 } else { 
-	mysql_free_result($result);
+	die("configuration error");
 }
 
 ?>

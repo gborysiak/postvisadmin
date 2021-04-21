@@ -59,12 +59,7 @@ if ($dbconfig == "mysqli") {
 	$string = $row["mail_text"];
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$results = mysql_query($query);
-	$row = mysql_fetch_array($results, MYSQL_ASSOC);
-	$string = $row["mail_text"];
-	mysql_close($link);
+   die("configuration error");
 }
 $params['include_bodies'] = false;
 $params['decode_bodies']  = true;
@@ -143,8 +138,7 @@ if ($dbconfig == "mysqli") {
 				exit();
 		}
 } else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');	
+   die("configuration error");
 }	
 $sa_tests = str_replace("]","",$sa_tests);
 $sa_tests = str_replace(" ","",$sa_tests);

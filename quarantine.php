@@ -113,12 +113,7 @@ if (isset($_GET['mail_id'])) {
 				$mysqli->close();
 			}
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			if ($results = mysql_query($query)) {
-				$row_affected = mysql_affected_rows($link);
-			}
-			mysql_close($link);
+         die("Configuration error");
 		}
 		
 		if ($row_affected > "0" and $request == "release") {
@@ -130,14 +125,9 @@ if (isset($_GET['mail_id'])) {
 		}
 	}
 }
-	        
-
-
 if (isset($error)) {
 	echo "<table class='sample' width='100%'><tr><td class='text' width='22'>$error</td></tr></table>";
 }
-
-
 ?>	
 		
 	  <table width="100%" border="0" align="center" class="main">
@@ -233,32 +223,6 @@ if ($dbconfig == "mysqli") {
    
 } else {
    die("configuration error");
-   /*
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($query);
-	$numrows = mysql_num_rows($result);
-	if ($quarantineresults = mysql_query($quarantine_query)) {
-		$i=0;
-		while ($row=mysql_fetch_array($quarantineresults, MYSQL_ASSOC)) {
-			$receiveddate = $row["time_iso"];
-			$secretid = urlencode($row["secret_id"]);
-			$mailid = urlencode($row["mail_id"]);
-			if ($i == 1){
-				$background = "bgcolor='#F2F2F2'";
-				$i=0;
-			} else {
-				$background = "bgcolor = '#FFFFFF'";
-				$i=1;
-			}
-			echo"<tr class='style5'><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinedfor']."</td>";
-			echo "<td $background><a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=release'>Rel</a> / <a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=delete'>Del</a></td></tr>";
-		}
-	} else {
-		echo "<tr style='text'><td colspan='5'>There was an error: " . mysql_error($link) . "</td></tr>";
-	}
-	mysql_close($link); 
-   */
 }
 	  ?>
 	  </tr>

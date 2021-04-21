@@ -35,13 +35,7 @@ if (isset($_POST['edituser'])) {
 			$error = $error . "<br />Filtering Options Adjusted";
 			$mysqli->close();
 		} else {
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($postfixquery);
-			$error = "Postfix information Changed, Password NOT CHANGED<br>";
-			$result = mysql_query($amavisquery);
-			$error = $error . "<br />Filtering Options Adjusted";
-			mysql_close($link);
+         die("Configuration error");
 		}
 	} else {
 		if ($password1 == $password2) {
@@ -54,12 +48,7 @@ if (isset($_POST['edituser'])) {
 				$error = "Password and Information Updated.";
 				$mysqli->close();
 			} else { 
-				$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-				mysql_select_db($postfixdatabase) or die('Could not select database');
-				$result = mysql_query($query);
-				$result = mysql_query($amavisquery);
-				$error = "Password and Information Updated.";
-				mysql_close($link);
+            die("Configuration error");
 			}
 		} else { 
 			$error = "Passwords did not match, please try again";
@@ -175,17 +164,7 @@ if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($policyquery);
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if ($userinfo->filterpolicy == $row[1]) {
-				echo '<option value="' . $row['id'] . '" selected >' . $row['policy_name'] . '</option>';
-			} else {
-				echo "<option value='".$row['id']."'>".$row['policy_name']."</option>";
-			}
-		}
-	mysql_close($link);
+   die("Configuration error");
 }	
 			?>
 			</select>

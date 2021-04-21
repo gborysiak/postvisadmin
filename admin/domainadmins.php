@@ -122,13 +122,7 @@ if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($query);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)){
-		echo "<option value='$row[0]'>$row[0]</option>'";
-	}
-	mysql_free_result($result);
+   die("configuration error");
 }
 
 
@@ -197,24 +191,7 @@ if ($dbconfig == "mysqli") {
 		echo "<td><a href='editadmin.php?user=$row[0]&domain=$row[2]'>Edit</a> / <a href='deladmin.php?user=$row[0]'>Delete</a></td></tr>";
 	}
 } else { 
-	$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-	mysql_select_db($postfixdatabase) or die('Could not select database');
-	$result = mysql_query($query);
-	while ($row = mysql_fetch_array($result, MYSQL_NUM)) { 
-		if ($i == 1){
-			$background = "bgcolor='#F2F2F2'";
-			$i=0;
-		} else {
-			$background = "bgcolor = '#FFFFFF'";
-			$i=1;
-		}		
-		echo "<tr class='style5' $background><td>$row[0]</td><td>$row[2]</td>";
-		if ($row[6] == 1) {
-			echo "<td>Yes</td>";
-		} else {	
-			echo "<td>No</td>";
-		}
-		echo "<td><a href='editadmin.php?user=$row[0]&domain=$row[2]'>Edit</a> / <a href='deladmin.php?user=$row[0]'>Delete</a></td></tr>";
+   die("configuration error");
 	}
 }
 

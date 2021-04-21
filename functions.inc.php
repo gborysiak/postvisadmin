@@ -32,11 +32,7 @@ if ($service == "amavis") {
 			$error = "<img src='$siteurl/images/no.png' height='14' width='14'/>";
 		}
 	} else {
-		if($link = mysql_connect($dbhost, $dbuser, $dbpass)) {
-			$error =  "<img src='$siteurl/images/ok.png' height='14' width='14'/>";
-			mysql_close($link);
-		} else {
-			$error = "<img src='$siteurl/images/no.png' height='14' width='14'/>";
+      die("Configuration error");
 		}
 	}
 } elseif ($service == "clamd") {
@@ -68,11 +64,7 @@ function aliasadd($address,$alias,$domain)
 			$rowsaffected = $mysqli->rows_affected;
 			return $rowsaffected;
 		} else {
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($query);
-			$rowsaffected = mysql_affected_rows($link);
-			return $rowsaffected;
+         die("Configuration error");
 		}
 	
 	}
@@ -141,11 +133,7 @@ class UserInfo
 			$result->close();
 			$mysqli->close();
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-			$row = mysql_fetch_array($result, MYSQL_ASSOC);
-			mysql_free_result($result);
+         die("Configuration error");
 		}
 			$this->username = $row['username'];
 			$this->name = $row['name'];
@@ -201,11 +189,7 @@ class AliasInfo
 			$mysqli->close();
 			
 		} else { 
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-			$row = mysql_fetch_array($result, MYSQL_ASSOC);
-			mysql_free_result($result);
+         die("Configuration error");
 		}
 		
 		$this->address = $row['address'];
@@ -279,21 +263,6 @@ class DomainInfo
          }            
          */		
 		} else { 
-         /*
-			$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-			mysql_select_db($postfixdatabase) or die('Could not select database');
-			if ($result = mysql_query($domainquery)) {
-				$row_domaininfo = mysql_fetch_array($result, MYSQL_ASSOC);
-				
-				if ($accountcount = mysql_query($userscountquery)) {
-					$row_accounts = mysql_fetch_array($accountcount, MYSQL_NUM);
-				}
-				
-				if ($aliasaccount = mysql_query($aliascountquery)) {
-					$row_aliases = mysql_fetch_array($aliasaccount, MYSQL_NUM);
-				}
-			}
-         */
          die("erreur de configuration");  
 		}
 			
@@ -345,15 +314,7 @@ function adduser($username,$password,$domain,$amavispolicy,$amavispriority,$name
 		}
 		$mysqli->close();
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');	
-		if ($resultdomain = mysql_query($postfixinsert)) {
-			$resultaliasdomain = mysql_query($postfixaliasinsert);
-			$resultamavis = mysql_query($amavisinsert);
-		} else { 
-			echo '<font color="red">MySQL Error: ' . mysql_error($link) . '<br /><br /> Query: ' . $amavisinsert . '</font>';
-		}
-		mysql_close($link);
+      die("Configuration error");
 	}
 	if ($maildir_create=="yes") {
 		$to = $username . "@" . $domain;
@@ -391,12 +352,7 @@ function deluser($user)
 		$result = $mysqli->query($query3);
 		$mysqli->close();
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($query1);
-		$result = mysql_query($query2);
-		$result = mysql_query($query3);
-		mysql_close($link);
+      die("Configuration error");
 	}
 }
 
@@ -415,10 +371,7 @@ function delalias($address,$gotoaddress)
 		$result = $mysqli->query($query1);
 		$mysqli->close();
 	} else {
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($query1);
-		mysql_close($link);
+      die("Configuration error");
 	}
 	
 }
@@ -438,10 +391,7 @@ function addadmin($username, $password, $domain, $active, $superadmin)
 		$result = $mysqli->query($query);
 		$rowsaffected = $mysqli->affected_rows;
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($query);
-		$rowsaffected = mysql_affected_rows();
+      die("Configuration error");
 	}
 		
 	return $rowsaffected;
@@ -463,9 +413,7 @@ function deladmin($user)
 		$result = $mysqli->query($query1);
 		$mysqli->close();
 	} else { 
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-		$result = mysql_query($query1);
+      die("Configuration error");
 	}	
 }
 
@@ -523,44 +471,7 @@ function deldomain($domain) {
 			printf("<tr><td width='22'><img src='$siteurl/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></td>", $mysqli->error);
 		}
 	} else { 
-		
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');
-			if ($domaindelete = mysql_query($domainquery)) {
-			echo "<tr><td width='22'><img src='$siteurl/images/ok.png' /></td><td class='text'>Domain Records for $domain deleted</td></tr>";
-		} else {
-			printf("<tr><td width='22'><img src='$siteurl/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></tr>", mysql_error());
-		}
-		
-		if ($usersdelete = mysql_query($usersquery)) {
-			echo "<tr><td width='22'><img src='$siteurl/images/ok.png' /></td><td class='text'>Users for $domain deleted</td></tr>";
-		} else {
-			printf("<tr><td width='22'><img src='$siteurl/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></tr>", mysql_error());
-		}
-		
-		if ($aliasdelete = mysql_query($aliasquery)) {
-			echo "<tr><td width='22'><img src='$siteurl/images/ok.png' /></td><td class='text'>Aliases for $domain deleted</td></tr>";
-		} else {
-			printf("<tr><td width='22'><img src='$siteurl/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></tr>", mysql_error());
-		}
-		
-		if ($policydelete = mysql_query($policyquery)) {
-			echo "<tr><td width='22'><img src='$siteurl/images/ok.png' /></td><td class='text'>Policies for $domain deleted</td></tr>";
-		} else {
-			printf("<tr><td width='22'><img src='$siteurl/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></tr>", mysql_error());
-		}
-		
-		if ($filterdelete = mysql_query($filterquery)) {
-			echo "<tr><td width='22'><img src='$siteurl/images/ok.png' /></td><td class='text'>Filting for users for $domain deleted</td></tr>";
-		} else {
-			printf("<tr><td width='22'><img src='/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></tr>", mysql_error());
-		}
-		
-		if ($admindelete = mysql_query($adminquery)) {
-			echo "<tr><td width='22'><img src='$siteurl/images/ok.png' /></td><td class='text'>Administrators for $domain deleted</td></td>";
-		} else {
-			printf("<tr><td width='22'><img src='$siteurl/images/no.png' /></td><td class='text'>Error During Delete: %s\n</td></tr>", mysql_error());
-		}
+      die("Configuration error");
 	}
 	echo "</table>";
 	return;
