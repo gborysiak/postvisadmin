@@ -26,6 +26,7 @@ require_once("../config/config.php");
         <td class="text"  ><img src="<?php echo $siteurl; ?>images/advancedsettings.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>admin/maintenance.php">Maintenance</a></td>
       </tr>
+      <!--
       <tr>
         <td class="text"  ><img src="<?php echo $siteurl; ?>images/domainadmins.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>admin/domainadmins.php">Domain Admins </a></td>
@@ -34,7 +35,6 @@ require_once("../config/config.php");
         <td class="text"  ><img src="<?php echo $siteurl; ?>images/bayes.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>admin/bayes.php">Bayes Stats </a></td>
       </tr>
-      <!--
 		<tr>
         <td class="text"  ><img src="<?php echo $siteurl; ?>images/autowhitelist.png" width="22" height="22" /></td>
         <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>admin/autowhitelist.php">Auto-Whitelist</a></td>

@@ -1,6 +1,6 @@
 <?php
 
- require_once("../config/config.php");
+require_once("../config/config.php");
 require '../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {
@@ -17,7 +17,7 @@ if (isset($_POST['Cancel'])) {
 	header("Location: $url");
 }
 
-require_once("../functions.inc.php");
+require("../functions.inc.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -71,7 +71,7 @@ if (isset($_POST['Submit'])) {
 	echo "</td></tr></table";
 } else {
 
-$domaininfo = new DomainInfo;
+$domaininfo = new DomainInfo();
 
 echo '<form id="form1" name="form1" method="post" action="">';
 echo "<table class='main' width='75%' align='center'><tr><td bgcolor='#003366' class='boldwhitetext'><strong><center>Are you sure you want to remove:</center></strong></td></tr>";

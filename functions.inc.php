@@ -24,17 +24,17 @@ if ($service == "amavis") {
 	}
 
 } elseif ($service == "mysql") {
-	if ($dbconfig == "mysqli") {
-		if ($mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase)) {
-			$error =  "<img src='$siteurl/images/ok.png' height='14' width='14'/>";
-			$mysqli->close();
-		} else {
-			$error = "<img src='$siteurl/images/no.png' height='14' width='14'/>";
-		}
-	} else {
+   if ($dbconfig == "mysqli") {
+      if ($mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase)) {
+         $error =  "<img src='$siteurl/images/ok.png' height='14' width='14'/>";
+         $mysqli->close();
+      } else {
+         $error = "<img src='$siteurl/images/no.png' height='14' width='14'/>";
+      }
+   } else {
       die("Configuration error");
-		}
-	}
+   }
+	
 } elseif ($service == "clamd") {
 	$clamwatch = $clamwatch_path;
 	$clamdstatus = exec($clamwatch);

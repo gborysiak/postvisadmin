@@ -192,7 +192,6 @@ if ($dbconfig == "mysqli") {
 	}
 } else { 
    die("configuration error");
-	}
 }
 
 ?>
