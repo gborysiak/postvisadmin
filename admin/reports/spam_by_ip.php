@@ -86,8 +86,7 @@ function roll(obj, highlightcolor, textcolor){
         </tr>
         <tr>
           <td width="15%" background="../../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Count</strong></div></td>
-          <td width="30%" background="../../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Avg Spam level </strong></div></td>
-          <td width="54%" background="../../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Domain</strong></div></td>
+          <td width="30%" background="../../images/butonbackground.jpg" class="footertext"><div align="center"><strong>IP</strong></div></td>
         </tr>
 
         <?php 
@@ -98,12 +97,12 @@ if ($dbconfig == "mysqli") {
       exit();
    }
    
-   $result = $mysqli->query($query_spam_count);
+   $result = $mysqli->query($query_top_ip);
    $numrows =  $result->num_rows;
    //echo "numrows $numrows";
    $result->close();
    
-   $temp_query = $query_spam_count . " LIMIT $offset, $rowsPerPage ";
+   $temp_query = $query_top_ip . " LIMIT $offset, $rowsPerPage ";
 	$result = $mysqli->query($temp_query);
    $i = 0;
    while ($row = $result->fetch_array(MYSQLI_NUM)) {
@@ -115,13 +114,8 @@ if ($dbconfig == "mysqli") {
 			$i=1;
 		}
 		echo "<tr $background><td class='style5'><div align='center'>$row[0]</div></td>";
-		$score = $row[1];
-		$score = round($score, 2);
-		echo "<td class='style5'><div align='center'>$score</div></td>";
-		$domain = explode(".", $row[2]);
-		$domain = array_reverse($domain);
-		$domain = implode(".",$domain);
-		echo "<td class='style5'><div align='center'>$domain</div></td></tr>";
+		$ip = $row[1];
+		echo "<td class='style5'><div align='center'>$ip</div></td>";
 
 	}
 	

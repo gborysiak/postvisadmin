@@ -75,17 +75,20 @@ $welcome_mail_subject = "Welcome!";
 
 
 
-$query_clean = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE content='C' GROUP BY sender.domain ORDER by cnt DESC LIMIT 20";
+$query_clean = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE msgs.content='C' GROUP BY sender.domain ORDER by cnt DESC LIMIT 20";
 
-$query_spamavg = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE content='S' GROUP BY sender.domain ORDER BY cnt DESC LIMIT 20";
+$query_spamavg = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE msgs.content='S' GROUP BY sender.domain ORDER BY cnt DESC LIMIT 20";
 
 $query_volume = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id GROUP BY sender.domain ORDER BY cnt DESC";
 
-$query_spam_count = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE content='S' GROUP BY sender.domain ORDER BY cnt DESC";
+$query_spam_count = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id WHERE msgs.content='S' GROUP BY sender.domain ORDER BY cnt DESC";
 
 $query_top_spam_scores = "SELECT count(*) as cnt, avg(bspam_level), sender.domain FROM msgs LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id GROUP BY sender.domain ORDER BY bspam_level DESC";
 
 $query_latestmail = "SELECT  UNIX_TIMESTAMP()-msgs.time_num AS age, SUBSTRING(policy,1,2) as pb,   content AS c, dsn_sent as dsn, ds, bspam_level AS level, size,   SUBSTRING(sender.email,1,18) AS s,   SUBSTRING(recip.email,1,18)  AS r,   SUBSTRING(msgs.subject,1,10) AS subj   FROM msgs LEFT JOIN msgrcpt         ON msgs.mail_id=msgrcpt.mail_id             LEFT JOIN maddr AS sender ON msgs.sid=sender.id LEFT JOIN maddr AS recip  ON msgrcpt.rid=recip.id   WHERE content IS NOT NULL AND UNIX_TIMESTAMP()-msgs.time_num < 120   ORDER BY msgs.time_num DESC;";
+
+$query_top_ip = "SELECT count(*) as cnt, client_addr FROM msgs  LEFT JOIN msgrcpt on msgs.mail_id=msgrcpt.mail_id  LEFT JOIN maddr AS sender ON msgs.sid=sender.id  LEFT JOIN maddr AS recip ON msgrcpt.rid=recip.id  GROUP BY  client_addr ORDER BY 1 DESC";
+
 
 // Cleanup Queries -- 
 // Default Queries provided by Amavis SQL Documentation to tiddy up the SQL Tables that amavis uses

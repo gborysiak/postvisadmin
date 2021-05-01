@@ -1,6 +1,6 @@
 <?php
 
- require_once("../config/config.php");
+require_once("../config/config.php");
 require '../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {
@@ -210,8 +210,8 @@ if ($pageNum > 1)
 {
    $page  = $pageNum - 1;
    if (isset($_GET['search'])) {
-   		$prev  = " <a href=\"$self?page=$page&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[Prev]</a> ";
-        $first = " <a href=\"$self?page=1&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[First Page]</a> ";
+   	$prev  = " <a href=\"$self?page=$page&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[Prev]</a> ";
+      $first = " <a href=\"$self?page=1&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[First Page]</a> ";
 	} else {
 		$prev = " <a href=\"$self?page=$page&rowsperpage=$rowsPerPage\" class='whitefooter'>[Prev]</a>";
 		$first = " <a href=\"$self?page=1&rowsperpage=$rowsPerPage\" class='whitefooter'>[First Page]</a> ";

@@ -1,5 +1,5 @@
 <?php
-require_once("../config/config.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/config/config.php");
 
 
 ?>
@@ -56,12 +56,13 @@ require_once("../config/config.php");
   </tr>
   <tr>
     <td class="text"  ><img src="<?php echo $siteurl; ?>/images/report.png" width="22" height="22" /></td>
-    <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"><a href="<?php echo $siteurl; ?>admin/reports/spam_by_score.php">Spam by Score</a></td>
+    <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"><a href="<?php echo $siteurl; ?>admin/reports/spam_by_ip.php">Spam by IP</a></td>
   </tr>
   <tr>
     <td class="text"  ><img src="<?php echo $siteurl; ?>/images/report.png" width="22" height="22" /></td>
     <td class="text"  onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"><a href="<?php echo $siteurl; ?>admin/history.php">Overview</a></td>
   </tr>
+  <!-- 
   <tr>
     <td class="text"  ><img src="<?php echo $siteurl; ?>/images/report.png" width="22" height="22" /></td>
     <td class="text"  onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"><a href="<?php echo $siteurl; ?>admin/reports/spam_by_rule.php">Rules Used</a></td>
@@ -70,17 +71,21 @@ require_once("../config/config.php");
     <td class="text"  ><img src="<?php echo $siteurl; ?>/images/report.png" width="22" height="22" /></td>
     <td class="text"  onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"><a href="<?php echo $siteurl; ?>admin/reports/mail_by_volume.php">Sender by Volume</a></td>
   </tr>
+   
   <tr>
     <td class="text"  ><img src="<?php echo $siteurl; ?>/images/advancedsettings.png" width="22" height="22" /></td>
     <td class="text"  onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"><a href="<?php echo $siteurl; ?>admin/spamrules.php">SA Rules</a></td>
   </tr>
+   -->
 </table>
 <br />
 <table width="100%" class="sample" >
+   <!-- 
   <tr>
     <td class="text"  ><img src="<?php echo $siteurl; ?>/images/cal.png" width="22" height="22" /></td>
     <td class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>admin/updaterules.php">Update Rules DB</a></td>
   </tr>
+   -->
   <tr>
     <td width="17%" class="text"  ><img src="<?php echo $siteurl; ?>/images/help.png" width="22" height="22" /></td>
     <td width="100%" class="text" onmouseover="roll(this, '#000000', 'black');" onmouseout="roll(this, '','black');"  ><a href="<?php echo $siteurl; ?>admin/documentation/index.php">Help</a></td>

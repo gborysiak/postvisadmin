@@ -61,7 +61,7 @@ function roll(obj, highlightcolor, textcolor){
     </div></td>
   </tr>
   <tr>
-    <td valign="top">  <? include('adminmenu.php'); ?><br />    </td>
+    <td valign="top">  <?php include('adminmenu.php'); ?><br />    </td>
     <td valign="top" class="main"><div id="main">
       <table width="100%" border="1" cellpadding="0" cellspacing="0" class="main">
         <tr>
@@ -74,11 +74,11 @@ function roll(obj, highlightcolor, textcolor){
               <td width="30%" background="../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Avg Spam level </strong></div></td>
               <td width="54%" background="../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Domain</strong></div></td>
             </tr>
-            <?
+            <?php
 if ($dbconfig == "mysqli") { 
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase); 
-		if (mysqli_connect_errno()) {
-			printf("Connect failed: %s\n", mysqli_connect_error());
+		if ( $mysqli->connect_errno) {
+			printf("Connect failed: %s\n", $mysqli->connect_error);
 			exit();
 		}
 	$result = $mysqli->query($query_clean);
@@ -116,7 +116,7 @@ if ($dbconfig == "mysqli") {
               <td width="30%" background="../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Avg Spam level </strong></div></td>
               <td width="54%" background="../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Domain</strong></div></td>
             </tr>
-            <? 
+            <?php 
 if ($dbconfig == "mysqli") {
 	
 	$result = $mysqli->query($query_spamavg);
@@ -157,7 +157,7 @@ if ($dbconfig == "mysqli") {
           <td width="19%" background="../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Spam Level </strong></div></td>
           <td width="22%" background="../images/butonbackground.jpg" class="footertext"><div align="center"><strong>Sender</strong></div></td>
           </tr>
-<?
+<?php
 if ($dbconfig == "mysqli") {
 	$result = $mysqli->query($query_latestmail);
 	while ($row = $result->fetch_array(MYSQLI_NUM)) {
@@ -165,7 +165,7 @@ if ($dbconfig == "mysqli") {
 		<tr>
           <td class="style5"><div align="center"><?php echo $row[0]; ?></div></td>
           <td class="style5"><div align="center">
-              <? if ($row[2] == "C") {
+              <?php if ($row[2] == "C") {
 		  	echo "Clean";
 			} elseif ($row[2] == "S") {
 			echo "Spam Quarantined";
@@ -188,7 +188,7 @@ if ($dbconfig == "mysqli") {
           <td class="style5"><div align="center"><?php echo $row[5]; ?></div></td>
           <td class="style5"><div align="center"><?php echo $row[7]; ?></div></td>
         </tr>
-<? }
+<?php }
 } else {
    die("configuration error");
 }
@@ -201,7 +201,7 @@ if ($dbconfig == "mysqli") {
     <td colspan="2"><?php echo $footer; ?></td>
   </tr>
 </table>
-<?
+<?php
 if ($dbconfig == "mysqli") {
 	$result->close();
 	$mysqli->close();
