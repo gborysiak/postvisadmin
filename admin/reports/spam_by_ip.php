@@ -4,8 +4,8 @@
 //echo $URLPART[0];
 //echo basename($_SERVER['REQUEST_URI']);
 //echo "document root " . $_SERVER['DOCUMENT_ROOT'];
-require_once($_SERVER['DOCUMENT_ROOT'] . '/config/config.php');
-require $_SERVER['DOCUMENT_ROOT'] . '/check_login.php';
+require_once('../../config/config.php');
+require '../../check_login.php';
 
 if ($loggedin == 1 and $superadmin == 0) {
 	$url = $siteurl . "/index.php";
