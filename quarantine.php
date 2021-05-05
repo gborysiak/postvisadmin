@@ -19,6 +19,63 @@ if (isset($_GET['rowsperpage'])) {
 
 $pageNum = 1;
 
+// si suppression via bouton delete
+if(sizeof($_POST) > 4) {
+   //echo "* " . sizeof($_POST) . "<br>";
+   //var_dump($_POST);
+
+   // connexion au serveur amavis
+	$fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
+   //$fp = true;
+	if (!$fp) {
+      $error = "$errstr ($errno)";
+	} else {
+		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+      if( $mysqli->connect_errno ) {
+         $error = $mysqli->connect_error;
+      } else {
+         // on supprime les lignes selectionnées
+         $i = 0;
+         while( isset( $_POST["selected$i"] )) {
+            //echo "* " . $_POST["mailid$i"] . $_POST["secretid$i"] . "<br>";
+
+            $mail_id = $_POST["mailid$i"];
+            $secret_id = $_POST["secretid$i"];
+            $request = "delete";
+            $out = "request=" . $request . "\r\n";
+            $out .= "mail_id=" . $mail_id . "\r\n";
+            $out .= "secret_id=" . $secret_id . "\r\n\r\n";
+            //echo $out;
+            fwrite($fp, $out);
+
+            $query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = ?";
+            if( $stmt = $mysqli->prepare($query) ) {
+               $stmt->bind_param("s", $mail_id);
+               if( ! $stmt->execute() ) {
+                  $error = $mysqli->error;
+               }
+               
+            }
+
+            $i = $i + 1;
+         }
+         fclose($fp);
+         $mysqli->close();
+      }
+      //echo "erreur " . $error;
+      //die("ok");
+      /*
+      if( ! isset($error) ) {
+         //die('ok');
+         // on recharge la page normalement
+         //$url = $siteurl . "index.php";
+         header('Location:'. $url);
+         exit;
+      }
+      */
+   }
+}
+
 if(isset($_GET['page']))
 {
     $pageNum = $_GET['page'];
@@ -58,6 +115,7 @@ $offset = ($pageNum - 1) * $rowsPerPage;
       </table>
     </div></td>
   </tr>
+
   <tr>
     <td valign="top">
       <?php include('menu.php'); ?>    </td>
@@ -84,8 +142,7 @@ $offset = ($pageNum - 1) * $rowsPerPage;
 				<input type="submit" name="submit" class="style5" id="submit" value="Search" /></td>
            	  <td>			  </tr>
             </table>
-                    </form>
-				
+                    </form>		
 	  <?php 
 if (isset($_GET['mail_id'])) {
 	$mail_id = $_GET['mail_id'];
@@ -117,11 +174,11 @@ if (isset($_GET['mail_id'])) {
 		}
 		
 		if ($row_affected > "0" and $request == "release") {
-			$error =  "<img src='../images/ok.png' /></td><td class='text'>Spam Released</td>";
+			$error =  "<img src='images/ok.png' /></td><td class='text'>Spam Released</td>";
 		} elseif ($row_affected > "0" and $request == "delete") {
-			$error =  "<img src='../images/ok.png' /></td><td class='text'>Spam Deleted</td>";
+			$error =  "<img src='images/ok.png' /></td><td class='text'>Spam Deleted</td>";
 		} else {
-		 	$error = "<img src='../images/no.png' /></td><td class='text'>Message Not Released, Contact Administrator</td>";
+		 	$error = "<img src='images/no.png' /></td><td class='text'>Message Not Released, Contact Administrator</td>";
 		}
 	}
 }
@@ -129,10 +186,11 @@ if (isset($error)) {
 	echo "<table class='sample' width='100%'><tr><td class='text' width='22'>$error</td></tr></table>";
 }
 ?>	
-		
+		<form id="form2" name="form2" method="POST" action="quarantine.php">
 	  <table width="100%" border="0" align="center" class="main">
 		
 		<tr>
+          <td width="10" bgcolor='#003366' class="whitefooter">Delete </td>
           <td width="150" bgcolor='#003366' class="whitefooter">To: </td>
           <td width="210" bgcolor='#003366' class="whitefooter">From: </td>
           <td width="160" bgcolor='#003366' class="whitefooter">Subject</td>
@@ -196,6 +254,7 @@ if ($dbconfig == "mysqli") {
       if ($quarantineresults = $stmt->get_result()) {
              
          $i = 0;
+         $idx = 0;
          while ($row = $quarantineresults->fetch_assoc()) {
             
             $secretid = urlencode($row["secret_id"]);
@@ -209,8 +268,9 @@ if ($dbconfig == "mysqli") {
                $background = "bgcolor = '#FFFFFF'";
                $i=1;
             }
-            echo "<tr class='style5'><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinefor']."</td>";
+            echo "<tr class='style5'><td><input type=\"checkbox\" id=\"delete\" name=\"selected$idx\"><input type=\"hidden\"  name=\"mailid$idx\"  value=\"$mailid\"><input type=\"hidden\"  name=\"secretid$idx\"  value=\"$secretid\"></td><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinefor']."</td>";
             echo "<td $background><a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=release'>Rel</a> / <a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=delete'>Del</a></td></tr>";
+            $idx = $idx + 1;
          }
       } else {
          echo "<tr style='text'><td colspan='5'>There was an error: " . $mysqli->error . "</td></tr>";
@@ -267,9 +327,12 @@ else
 echo $first . $prev . " Showing page $pageNum of $maxPage pages " . $next . $last;
 ?>	  
 	  </center></td></tr></table>
+     <input type="submit" value="Delete" >
+     </form>
       <br />
     </div></td>
   </tr>
+   
   <tr>
     <td colspan="2"><?php echo $footer; ?></td>
   </tr>
