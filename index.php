@@ -10,6 +10,11 @@ if ($loggedin == 0) {
 
 require_once("functions.inc.php");
 $domaininfo = new DomainInfo();
+
+$username="";
+if(isset($_SESSION['username'])) {
+   $username =  $_SESSION['username'];
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -52,7 +57,7 @@ $domaininfo = new DomainInfo();
     <td valign="top">
       <?php include('menu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">      
-      <div align="center"><span class="text"><span class="style6">Welcome <?php echo $_SESSION['username']; ?>!</span><br />
+      <div align="center"><span class="text"><span class="style6">Welcome <?php echo $username; ?>!</span><br />
           <strong>Current Date/Time:</strong> <?php echo date("n/j/y g:iA"); ?> </span><br />
       </div>
       <table width="50%" border="0" align="center" class="main">
@@ -77,21 +82,22 @@ $domaininfo = new DomainInfo();
           <td background="images/butonbackground.jpg" class="text">Messages in Quarantine: </td>
           <td class="text">
 <?php 
-$domain = $_SESSION['domain'];
-$quarantine_query = $quarantine_query . " AND recipient.email like '%$domain'";
-if ($dbconfig == "mysqli") {
-	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-		if ($results = $mysqli->query($quarantine_query)) {
-			$rowcount = $results->num_rows;
-		  	echo $rowcount;
-		} else {
-		  	echo "HOly Shit batman it didn't work: " . $mysqli->error;
-	  	}
-	$mysqli->close();
-} else { 
-   die("Configuration error");
-}
-		  
+if( isset($_SESSION['domain']) ) {
+   $domain = $_SESSION['domain'];
+   $quarantine_query = $quarantine_query . " AND recipient.email like '%$domain'";
+   if ($dbconfig == "mysqli") {
+      $mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+         if ($results = $mysqli->query($quarantine_query)) {
+            $rowcount = $results->num_rows;
+            echo $rowcount;
+         } else {
+            echo "HOly Shit batman it didn't work: " . $mysqli->error;
+         }
+      $mysqli->close();
+   } else { 
+      die("Configuration error");
+   }
+}		  
 		  		  
 		  ?></td>
         </tr>

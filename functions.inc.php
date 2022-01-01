@@ -4,6 +4,8 @@
 // PostVis Admin
 // functions.inc.php - Written by rogersmith@lazytechs.com
 // Version 1.0 - RC
+//
+// 211231 GRBOFR remove unused functions
 
 require_once("config/config.php");
 function servicecheck($service) {
@@ -49,7 +51,8 @@ return $error;
 }
 
 
-
+// 211231 GRBOFR removed
+/* 
 function aliasadd($address,$alias,$domain)
 	{
 		require("config/config.php");
@@ -68,6 +71,7 @@ function aliasadd($address,$alias,$domain)
 		}
 	
 	}
+*/
 
 function cryptpassword($pass)
   {
@@ -102,8 +106,9 @@ function randomkey($length)
 
 
 
+// 211231 GRBOFR removed
 // User Info Class -- Grabs various infromation about a user
-
+/*
 class UserInfo
 {
 	var $user;
@@ -149,9 +154,11 @@ class UserInfo
 					
 	}
 };
+*/
 
+// 211231 GRBOFR removed
 // AliasInfo Class -- Grabs information about selected alias
-
+/*
 class AliasInfo
 {
 	var $address;
@@ -202,6 +209,7 @@ class AliasInfo
 		
 	}
 };
+*/
 
 
 class DomainInfo
@@ -219,54 +227,71 @@ class DomainInfo
 		
 	function __construct()
 	{ 
-	$this->time = time();
-    if (isset($_GET['domain'])) {
-		$domain = $_GET['domain'];
-	}else{
-		$domain = $_SESSION['domain'];
-	}
-	$this->getdomaininfo($domain);
-   
+      $this->time = time();
+      if (isset($_GET['domain'])) {
+         $domain = $_GET['domain'];
+      }else{
+         if( isset($_SESSION['domain']) ) {
+            $domain = $_SESSION['domain'];
+         } else {
+         $domain = "";
+         }
+      }
+      $this->getdomaininfo($domain);
 	}
 	
 	function getdomaininfo($domain)
 	{
 		include("config/config.php");
+      error_log("** getdomaininfo " . $domain);
 		$this->domain=$domain;
       //echo $domain;
-		$domainquery="SELECT * FROM domain WHERE domain='$domain'";
-		$userscountquery = "SELECT count(domain) as cnt FROM mailbox WHERE domain='$domain'";
-		$aliascountquery = "SELECT count(domain) as cnt FROM alias WHERE domain='$domain' AND address != goto";
-		
+		$domainquery="SELECT * FROM domain WHERE domain= ?";
+		$userscountquery = "SELECT count(domain) as cnt FROM mailbox WHERE domain= ?";
+		//$aliascountquery = "SELECT count(domain) as cnt FROM alias WHERE domain= ? AND address != goto";
+		$aliascountquery = "SELECT count(domain) as cnt FROM alias WHERE domain= ?";
+      
 		if ($dbconfig == "mysqli") {
-		
-			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);	
-         /*
-         if ($resultdomaininfo = $mysqli->query($domainquery)) {
-            $row_domaininfo = $resultdomaininfo->fetch_array(MYSQLI_ASSOC);
+         error_log("** 1");
+			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $authentdatabase);	
+         if( $stmt = $mysqli->prepare($domainquery) ) {
+            $stmt->bind_param("s", $this->domain);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row_domaininfo = $result->fetch_assoc();
+            $numrows = $result->num_rows;
          } else {
-            die($mysqli->error);
-         } 
-
- 
-         if ($accountcount = $mysqli->query($userscountquery)) {
-               $row_accounts = $accountcount->fetch_array(MYSQLI_NUM);
-         } else {
-            die($mysqli->error);
+            error_log("** errdomain1 " . $mysqli->error);
+            die( $mysqli->error);
          }            
- 
-            
-         if ($aliasaccount = $mysqli->query($aliascountquery)) {
-               $row_aliases = $aliasaccount->fetch_array(MYSQLI_NUM);               
+         error_log("** 2");
+         if( $stmt = $mysqli->prepare($userscountquery) ) {
+            $stmt->bind_param("s", $this->domain);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row_accounts = $result->fetch_assoc();
+            $numrows = $result->num_rows;
          } else {
-            die($mysqli->error);
-         }            
-         */		
+            error_log("** errdomain1 " . $mysqli->error);
+            die( $mysqli->error);
+         }                
+         error_log("** 3");
+         if( $stmt = $mysqli->prepare($aliascountquery) ) {
+            $stmt->bind_param("s", $this->domain);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row_aliases = $result->fetch_assoc();
+            $numrows = $result->num_rows;
+         } else {
+            error_log("** errdomain1 " . $mysqli->error);
+            die( $mysqli->error);
+         }    
+         
 		} else { 
          die("erreur de configuration");  
 		}
 			
-		/*      
+		error_log("** 4");
 		$this->description = $row_domaininfo['description'];
 		$this->domain = $row_domaininfo['domain'];
 		$this->maxaccounts = $row_domaininfo['mailboxes'];
@@ -275,10 +300,10 @@ class DomainInfo
 		$this->quota = $row_domaininfo['maxquota'];
 		$this->modified = $row_domaininfo['modified'];
 		$this->active = $row_domaininfo['active'];
-		$this->numberaccounts = $row_accounts[0];
-		$this->aliascount = $row_aliases[0];
-      */
+		$this->numberaccounts = $row_accounts['cnt'];
+		$this->aliascount = $row_aliases['cnt'];
       
+      /*
 		$this->description = "";
 		$this->domain = "";
 		$this->maxaccounts = "";
@@ -289,7 +314,7 @@ class DomainInfo
 		$this->active = "";
 		$this->numberaccounts = 0;
 		$this->aliascount = 0;
-      
+      */
 	}
 };
 		

@@ -4,7 +4,7 @@ require_once("config/config.php");
 require 'check_login.php';
 
 $error=NULL;
-
+error_log("** login.php");
 if ($loggedin == 1 and $superadmin == 1) {
 	$url = $siteurl . "admin/index.php";
 	header('Location:'. $url);
@@ -15,7 +15,7 @@ if ($loggedin == 1 and $superadmin == 1) {
 
 
 if (isset($_POST['login'])) {
-	
+	error_log("** login.php in post. dbconfig = " . $dbconfig);
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 	
@@ -28,22 +28,11 @@ if (isset($_POST['login'])) {
 	} else {
 
       // 210405 GRBOFR use vmail mailbox table for authentifications 
-		//$query = "SELECT * FROM admin WHERE username = '$username' AND password = SHA1('$password')";
       $query = "SELECT password, isadmin, domain, active FROM mailbox WHERE username = ?";
 		
 		if ($dbconfig == "mysqli") { 
 			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $authentdatabase);
 	
-         /*
-			if (mysqli_connect_errno()) {
-				printf("Connect failed: %s\n", mysqli_connect_error());
-					exit();
-			}
-		
-			$result = $mysqli->query($query);
-			$row = $result->fetch_array(MYSQLI_NUM);
-			$numrows = $result->num_rows;
-         */
          if( $stmt = $mysqli->prepare($query) ) {
             $stmt->bind_param("s", $username);
             $stmt->execute();
@@ -51,32 +40,22 @@ if (isset($_POST['login'])) {
             $row = $result->fetch_assoc();
             $numrows = $result->num_rows;
          } else {
+            error_log("** err1 " . $mysqli->error);
             die( $mysqli->error);
          }            
 		} else { 
          die("configuration error");
 		}
 
+      error_log("** 1");
       if( $numrows > 0 and ! password_verify($password, $row["password"]) ) {
          $numrows = 0;
       }
 
+      error_log("** 2. username " . $username . " / domain " . $row["domain"] );
 		if ($numrows == 1 and $row["isadmin"] == 1 and $row["active"] == 1) {
 			
-			//$updatequery = "UPDATE admin set lastlogin = NOW() WHERE username = '$username'";
-			$updatequery = "UPDATE  mailbox SET lastlogindate = NOW() WHERE username = ?";
-         
-			if ($dbconfig == "mysqli") {
-				//$loginupdate = $mysqli->query($updatequery);
-            if( $stmt = $mysqli->prepare($updatequery) ) {
-               $stmt->bind_param("s", $username);
-               $stmt->execute();
-            }  else {
-               die( $mysqli->error);
-            }               
-			} else { 
-            die("configuration error");
-			}
+         error_log("** 3");
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $row["password"];
 			$_SESSION['domain'] = $row["domain"];
@@ -91,21 +70,6 @@ if (isset($_POST['login'])) {
 
 		} elseif ($numrows == 1 and $row["isadmin"] == 0 and $row[active] == 1) {
 	
-			//$updatequery = "UPDATE admin set lastlogin = NOW() WHERE username = '$username'";
-         $updatequery = "UPDATE  mailbox SET lastlogindate = NOW() WHERE username = ?";
-         
-			if ($dbconfig == "mysqli") {
-				//$loginupdate = $mysqli->query($updatequery);
-            if( $stmt = $mysqli->prepare($updatequery) ) {
-               $stmt->bind_param("s", $username);
-               $stmt->execute();
-            }  else {
-               die( $mysqli->error);
-            }   
-			} else { 
-            die("configuration error");
-			}
-	
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $row["password"];
 			$_SESSION['domain'] = $row["domain"];
@@ -113,7 +77,7 @@ if (isset($_POST['login'])) {
 	
 			$url = $siteurl . "index.php";
 			header('Location:'. $url);
-		} elseif ($numrows == 1 and $row [active] == 0) {
+		} elseif ($numrows == 1 and $row["active"] == 0) {
 			$error =  "Account Disabled, Contact Administrator";
 		}
 	if ($dbconfig == "mysqli") {

@@ -12,6 +12,8 @@ if ($loggedin == 1 and $superadmin == 0) {
 }
 
 require_once("../functions.inc.php");
+
+$domaininfo = new DomainInfo();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -62,7 +64,28 @@ body {
       <?php include('adminmenu.php'); ?>    </td>
     <td valign="top" class="main"><div id="main">      
       <div align="center" class="text"><span class="style6">Welcome <?php echo $_SESSION['username']; ?>!</span><br />
-          <strong>Current Date/Time:</strong> <?php echo date("n/j/y g:iA"); ?>      </div>
+          <strong>Current Date/Time:</strong> <?php echo date("n/j/y g:iA"); ?>      
+      </div>
+      <table width="45%" border="1" align="center" class="main">
+        <tr>
+          <td colspan="2" bgcolor="#003366" class="text"><div align="center" class="boldwhitetext">Account Status</div></td>
+          </tr>
+        <tr>
+          <td width="62%" background="../images/butonbackground.jpg" class="boldtext">Domain: </td>
+          <td width="38%" class="text"><?php echo $domaininfo->domain; ?></td>
+          </tr>
+        <tr>
+          <td background="../images/butonbackground.jpg" class="boldtext">MailBoxes            </td>
+          <td class="text"><?php echo $domaininfo->numberaccounts . "/"; 
+		  if ($domaininfo->maxaccounts == 0) { echo "Unlimited"; } else { echo $domaininfo->maxaccounts;}?></td>
+          </tr>
+        <tr>
+          <td background="../images/butonbackground.jpg" class="boldtext">Aliases</td>
+          <td class="text"><?php echo $domaininfo->aliascount . "/";
+		   if ($domaininfo->maxalias == 0) { echo "Unlimited"; } else { echo $domaininfo->maxalias;}?></td>
+        </tr>
+      </table>
+      </br>
       <?php if ($enable_status_checks == "yes") { ?>
       <table width="45%" border="1" align="center" cellpadding="1" cellspacing="1" class="main">
         <tr>
@@ -170,11 +193,16 @@ if ($dbconfig == "mysqli") {
           <td background="../images/butonbackground.jpg" class="boldtext">Server Load:</td>
           <td class="text"><?php 
 $load = explode(" ", exec("cat /proc/loadavg"));
-echo $load[0].'&nbsp;&nbsp;'.$load[1].'&nbsp;&nbsp;'.$load[2];
-
+//var_dump(count($load));
+if(count($load) > 1) {
+   echo $load[0].'&nbsp;&nbsp;'.$load[1].'&nbsp;&nbsp;'.$load[2];
+} else {
+   echo '0&nbsp;&nbsp;0&nbsp;&nbsp;0';
+}
 ?></td>
         </tr>
       </table>
+      
       <br />
     </div></td>
   </tr>

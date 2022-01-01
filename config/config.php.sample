@@ -3,11 +3,13 @@
 // Config.php - Written by rogersmith@lazytechs.com
 // Version 1.5
 
+require_once("queries.php");
+
 // Database Information 
 
 $siteurl = "https://domain.tld/"; //Site URL, include the trailing /
 $sitepath = "/path/to/postvisadmin"; // System path to PostVis Admin
-$time_offset = date("Z")/60/60; //Get current timezone offset from server timezone setting.
+#$time_offset = date("Z")/60/60; //Get current timezone offset from server timezone setting.
 
 // Paths to Spamassassin Rule directories, separated by space.  Include the *.cf at the end to ensure it parses only rule cf files.
 $sa_rule_paths = "/etc/spamassassin/*.cf /usr/local/etc/mail/spamassassin/*.cf /etc/mail/spamassassin/*.cf /usr/local/share/spamassassin/*.cf  /usr/share/spamassassin/*.cf /var/lib/spamassassin/*/*/*.cf";
@@ -65,9 +67,10 @@ $maildir_create = "yes"; // Set to yes to have PostVis Admin send email address 
 
 $welcome_mail = "<html><body><font face='Arial, Helvetica, sans-serif'>Welcome to your new email account.  If you have any issues please contact our support team.<br /><br />Thanks<br /><a href='mailto:$admin_email'>$admin_email</a></font></body></html>";
 $welcome_mail_subject = "Welcome!";
+$footer = "<center><div class='footer'>Powered by Postvis Admin 1.5</div></center>";
 
-
-// ****************DO NOT EDIT BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING*****************//
+/*
+// ****************DO NOT EDIT BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING****************
 
 // Mail Log / Quantine Logs Queries ###### Normally Should not have to Edit ########
 // Queries are example queries provided by Amavis-New SQL documentation
@@ -112,8 +115,9 @@ $wb_query = "SELECT wblist.rid, wblist.sid, wblist.wb, mailaddr.email as sender,
 
 // Please do not remove the following line.
 
-$footer = "<center><div class='footer'>Powered by Postvis Admin 1.5</div></center>";
+
 
 $quarantine_query = "SELECT DISTINCT quarantine.mail_id, secret_id, rs, bspam_level, (UNIX_TIMESTAMP(time_iso) + (3600 * $time_offset)) AS time_iso, SUBSTRING(sender.email,1,35) AS sender, SUBSTRING(recipient.email,1,28) AS recipient, size, msgs.content AS quaratinefor, SUBSTRING( subject, 1, 25) AS subject FROM `quarantine` LEFT JOIN msgrcpt ON msgrcpt.mail_id = quarantine.mail_id LEFT JOIN msgs ON msgs.mail_id = quarantine.mail_id LEFT JOIN maddr AS recipient ON msgrcpt.rid = recipient.id LEFT JOIN maddr AS sender ON msgs.sid = sender.id WHERE msgrcpt.rs != 'R' AND msgrcpt.rs != 'D'";
+*/
 
 ?>
