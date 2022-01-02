@@ -1,4 +1,6 @@
 <?php
+// 20220102 GRBOFR debug mode
+//                 use bind parameters
 
 require_once("../config/config.php");
 require '../check_login.php';
@@ -20,6 +22,59 @@ if (isset($_GET['rowsperpage'])) {
 }
 
 $pageNum = 1;
+
+// si suppression via bouton delete
+if(sizeof($_POST) > 4) {
+   //echo "* " . sizeof($_POST) . "<br>";
+   //var_dump($_POST);
+
+   // connexion au serveur amavis
+   $fp = false;
+   if( $debug == "false" ) {
+      $fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
+      if (!$fp) {
+         $error = "$errstr ($errno)";
+      }
+   }
+	if( $debug == "true" or $fp) {
+		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+      if( $mysqli->connect_errno ) {
+         $error = $mysqli->connect_error;
+      } else {
+         // on supprime les lignes selectionnées
+         $i = 0;
+         while( isset( $_POST["selected$i"] )) {
+            //echo "* " . $_POST["mailid$i"] . $_POST["secretid$i"] . "<br>";
+
+            $mail_id = $_POST["mailid$i"];
+            $secret_id = $_POST["secretid$i"];
+            $request = "delete";
+            $out = "request=" . $request . "\r\n";
+            $out .= "mail_id=" . $mail_id . "\r\n";
+            $out .= "secret_id=" . $secret_id . "\r\n\r\n";
+            //echo $out;
+            if( $debug == "false" ) {
+               fwrite($fp, $out);
+            }
+            
+            $query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = ?";
+            if( $stmt = $mysqli->prepare($query) ) {
+               $stmt->bind_param("s", $mail_id);
+               if( ! $stmt->execute() ) {
+                  $error = $mysqli->error;
+               }
+               
+            }
+
+            $i = $i + 1;
+         }
+         if( $debug == "false" ) {
+            fclose($fp);
+         }
+         $mysqli->close();
+      }
+   }
+}
 
 if(isset($_GET['page']))
 {
@@ -92,30 +147,49 @@ if (isset($_GET['mail_id'])) {
 	$mail_id = $_GET['mail_id'];
 	$secret_id = $_GET['secret_id'];
 	$request = $_GET['request'];
-   	
-	$fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
-	if (!$fp) {
+   // 20220102 GRBOFR debug mode
+   $fp = false;
+   if( $debug == "false" ) {
+      $fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
+      if (!$fp) {
    		echo "$errstr ($errno)<br />\n";
-	} else {
-   		$out = "request=" . $request . "\r\n";
+      }
+   }
+	if( $debug == "true" or $fp ) {
+      $out = "request=" . $request . "\r\n";
 		$out .= "mail_id=" . $mail_id . "\r\n";
 		$out .= "secret_id=" . $secret_id . "\r\n\r\n";
-		fwrite($fp, $out);
-   
-		fclose($fp);
+      
+      if($debug == "false" ) {
+         fwrite($fp, $out);
+         fclose($fp);
+      }
+      
 		if ($request == "release") {
-			$query = "UPDATE msgrcpt set rs = 'R' WHERE mail_id = \"$mail_id\"";
+			$query = "UPDATE msgrcpt set rs = 'R' WHERE mail_id = ? ";
 		} elseif ($request == "delete") {
-			$query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = \"$mail_id\"";
+			$query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = ? ";
 		}
 		if ($dbconfig == "mysqli") {
+         $mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+         if( $stmt = $mysqli->prepare($query) ) {
+            $stmt->bind_param("s", $mail_id);
+            if( ! $stmt->execute() ) {
+               $error = $mysqli->error;
+            }
+            $row_affected = $mysqli->affected_rows;
+            $mysqli->close();
+         }
+         
+         /*
 			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 			if ($results = $mysqli->query($query)) {
 				$row_affected = $mysqli->affected_rows;
 				$mysqli->close();
-			}		
+			}
+         */
 		} else { 
-         die("configuration error");
+         die("Configuration error");
 		}
 		
 		if ($row_affected > "0" and $request == "release") {
@@ -129,14 +203,14 @@ if (isset($_GET['mail_id'])) {
 	}
 }
 if (isset($error)) {
-	echo "<table class='sample' width='100%'><tr><td class='text' width='22'>$error</tr></table>";
-}	        
-		
-		?>	
-	  
+	echo "<table class='sample' width='100%'><tr><td class='text' width='22'>$error</td></tr></table>";
+}
+?>	
+		<form id="form2" name="form2" method="POST" action="quarantine.php">
 	  <table width="100%" border="0" align="center" class="main">
 		
 		<tr>
+          <td width="10" bgcolor='#003366' class="whitefooter">Delete </td>
           <td width="150" bgcolor='#003366' class="whitefooter">To: </td>
           <td width="210" bgcolor='#003366' class="whitefooter">From: </td>
           <td width="160" bgcolor='#003366' class="whitefooter">Subject</td>
@@ -145,60 +219,87 @@ if (isset($error)) {
 		  <td  width="50"bgcolor='#003366' class="whitefooter">Release</td>
         </tr>
       <?php 
+$numrows = 0;
+$bindparam = "";
+$domain = $_SESSION['domain'];
 if (isset($_GET['searchfield'])) {
 	$searchfield = $_GET['searchfield'];
 	$search = $_GET['search'];
-		if ($searchfield == "recipient") {
-			$quarantine_query = $quarantine_query . " AND recipient.email LIKE '%$search%'";
-		} elseif ($searchfield == "sender") {
-			$quarantine_query = $quarantine_query . " AND sender.email LIKE '%$search%'"; 
-		} elseif ($searchfield == "subject") {
-			$quarantine_query = $quarantine_query . " AND subject LIKE '%$search%'";
-		}
+   $search = "%" . $search ."%";
+	if ($searchfield == "recipient") {
+		$quarantine_query = $quarantine_query . " AND recipient.email LIKE ?";
+      $bindparam = $bindparam . "s";
+	} elseif ($searchfield == "sender") {
+		$quarantine_query = $quarantine_query . " AND sender.email LIKE ?"; 
+      $bindparam = $bindparam . "s";
+	} elseif ($searchfield == "subject") {
+		$quarantine_query = $quarantine_query . " AND subject LIKE ?";
+      $bindparam = $bindparam . "s";
+	}
 }
-
-
 $query = $quarantine_query;
 $quarantine_query = $quarantine_query . " ORDER BY time_iso DESC LIMIT $offset, $rowsPerPage ";
 
+if ($dbconfig == "mysqli") {
+	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 
-if ($dbconfig == "mysqli") { 
+   // recherche du nombre de lignes total
+   if( $stmt = $mysqli->prepare($query) ) {
+      //echo $query . "</br>" . $bindparam;
 
-$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-	if (mysqli_connect_errno()) {
-   		printf("Connect failed: %s\n", mysqli_connect_error());
-		exit();
-	}
-	
-	$result = $mysqli->query($query);
-	$numrows = $result->num_rows;
-	
-	if ($quarantineresults = $mysqli->query($quarantine_query)) {
-		$i = 0;
-		while ($row=$quarantineresults->fetch_array(MYSQLI_ASSOC)) {
-			$secretid = urlencode($row["secret_id"]);
-			$mailid = urlencode($row["mail_id"]);
-			$receiveddate = $row["time_iso"];
-			$receiveddate = strftime("%b %d %I:%M %p", $receiveddate);
-			if ($i == 1){
-				$background = "bgcolor='#F2F2F2'";
-				$i=0;
-			} else {
-				$background = "bgcolor = '#FFFFFF'";
-				$i=1;
-			}
-			echo "<tr class='style5'><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinefor']."</td>";
-			
-			echo "<td $background><a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=release'>Rel</a> / <a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=delete'>Del</a></td></tr>";
-		}
-	} else {
-		echo "<tr style='text'><td colspan='5'>There was an error: " . $mysqli->error . "</td></tr>";
-	}
-	$mysqli->close();
+      //echo $_SESSION['username'];
+      if( strlen($bindparam) > 0 ) {
+         $stmt->bind_param($bindparam, $search);
+      }
+      $stmt->execute();
+      $results = $stmt->get_result();
+      $numrows = $results->num_rows;
+      $results->close();
+      //echo "numrows " .  $numrows;
+
+   } else {
+      die("3 " . $mysqli->error);
+   }
+         
+   //echo "$$ 2";
+   if( $stmt = $mysqli->prepare($quarantine_query) ) {
+      if( strlen($bindparam) > 0 ) {
+         $stmt->bind_param($bindparam, $search);
+      }
+      $stmt->execute();
+      if ($quarantineresults = $stmt->get_result()) {
+             
+         $i = 0;
+         $idx = 0;
+         while ($row = $quarantineresults->fetch_assoc()) {
+            
+            $secretid = urlencode($row["secret_id"]);
+            $mailid = urlencode($row["mail_id"]);
+            $receiveddate = $row["time_iso"];
+            $receiveddate = strftime("%b %d %I:%M %p", $receiveddate);
+            if ($i == 1){
+               $background = "bgcolor='#F2F2F2'";
+               $i=0;
+            } else {
+               $background = "bgcolor = '#FFFFFF'";
+               $i=1;
+            }
+            echo "<tr class='style5'><td><input type=\"checkbox\" id=\"delete\" name=\"selected$idx\"><input type=\"hidden\"  name=\"mailid$idx\"  value=\"$mailid\"><input type=\"hidden\"  name=\"secretid$idx\"  value=\"$secretid\"></td><td $background><a href='messageview.php?mail_id=$mailid'>". $row["recipient"]."</a></td><td $background>".$row["sender"]."</td><td $background>".$row['subject']."</td><td $background>$receiveddate</td><td $background>".$row['quaratinefor']."</td>";
+            echo "<td $background><a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=release'>Rel</a> / <a href='quarantine.php?mail_id=$mailid&secret_id=$secretid&request=delete'>Del</a></td></tr>";
+            $idx = $idx + 1;
+         }
+      } else {
+         echo "<tr style='text'><td colspan='5'>There was an error: " . $mysqli->error . "</td></tr>";
+      }
+      $quarantineresults->close();
+      $mysqli->close(); 
+   }  else {
+      die( $mysqli->error);
+   }
+   
 } else {
    die("configuration error");
 }
-
 	  ?>
 	  </tr>
 	  <tr><td colspan="7" bgcolor='#003366' class="whitefooter"><center>
@@ -210,8 +311,8 @@ if ($pageNum > 1)
 {
    $page  = $pageNum - 1;
    if (isset($_GET['search'])) {
-   	$prev  = " <a href=\"$self?page=$page&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[Prev]</a> ";
-      $first = " <a href=\"$self?page=1&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[First Page]</a> ";
+   		$prev  = " <a href=\"$self?page=$page&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[Prev]</a> ";
+        $first = " <a href=\"$self?page=1&rowsperpage=$rowsPerPage&searchfield=". $_GET['searchfield'] . "&search=" . $_GET['search'] . "\" class='whitefooter'>[First Page]</a> ";
 	} else {
 		$prev = " <a href=\"$self?page=$page&rowsperpage=$rowsPerPage\" class='whitefooter'>[Prev]</a>";
 		$first = " <a href=\"$self?page=1&rowsperpage=$rowsPerPage\" class='whitefooter'>[First Page]</a> ";
@@ -242,9 +343,12 @@ else
 echo $first . $prev . " Showing page $pageNum of $maxPage pages " . $next . $last;
 ?>	  
 	  </center></td></tr></table>
+     <input type="submit" value="Delete" >
+     </form>
       <br />
     </div></td>
   </tr>
+   
   <tr>
     <td colspan="2"><?php echo $footer; ?></td>
   </tr>

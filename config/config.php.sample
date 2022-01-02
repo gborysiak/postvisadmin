@@ -3,6 +3,8 @@
 // Config.php - Written by rogersmith@lazytechs.com
 // Version 1.5
 
+// 20220102 GRBOFR debug mode
+
 require_once("queries.php");
 
 // Database Information 
@@ -49,7 +51,8 @@ $admin_email = "sysadmin@domain.tld"; // Administrator Email Address
 $support_email = $admin_email; //Optional -- If same as $admin_email leave as is, other wise change
 
 
-
+// 20220102 GRBOFR debug mode ( true / false )
+$debug = "false";
 // Amavis Information
 $amavisserver = "127.0.0.1"; // Change to IP address for amavis filtering server
 $service_port = "10024"; // Amavis port

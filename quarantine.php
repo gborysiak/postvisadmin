@@ -1,6 +1,8 @@
 <?php
+// 20220102 GRBOFR debug mode
+//                 use bind parameters
 
- require_once("config/config.php");
+require_once("config/config.php");
 require 'check_login.php';
 
 
@@ -25,11 +27,14 @@ if(sizeof($_POST) > 4) {
    //var_dump($_POST);
 
    // connexion au serveur amavis
-	$fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
-   //$fp = true;
-	if (!$fp) {
-      $error = "$errstr ($errno)";
-	} else {
+   $fp = false;
+   if( $debug == "false" ) {
+      $fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
+      if (!$fp) {
+         $error = "$errstr ($errno)";
+      }
+   }
+	if( $debug == "true" or $fp) {
 		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
       if( $mysqli->connect_errno ) {
          $error = $mysqli->connect_error;
@@ -46,8 +51,10 @@ if(sizeof($_POST) > 4) {
             $out .= "mail_id=" . $mail_id . "\r\n";
             $out .= "secret_id=" . $secret_id . "\r\n\r\n";
             //echo $out;
-            fwrite($fp, $out);
-
+            if( $debug == "false" ) {
+               fwrite($fp, $out);
+            }
+            
             $query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = ?";
             if( $stmt = $mysqli->prepare($query) ) {
                $stmt->bind_param("s", $mail_id);
@@ -59,20 +66,11 @@ if(sizeof($_POST) > 4) {
 
             $i = $i + 1;
          }
-         fclose($fp);
+         if( $debug == "false" ) {
+            fclose($fp);
+         }
          $mysqli->close();
       }
-      //echo "erreur " . $error;
-      //die("ok");
-      /*
-      if( ! isset($error) ) {
-         //die('ok');
-         // on recharge la page normalement
-         //$url = $siteurl . "index.php";
-         header('Location:'. $url);
-         exit;
-      }
-      */
    }
 }
 
@@ -117,10 +115,10 @@ $offset = ($pageNum - 1) * $rowsPerPage;
   </tr>
 
   <tr>
-    <td valign="top">
-      <?php include('menu.php'); ?>    </td>
-    <td valign="top" class="main"><div id="main">
-     <form id="form1" name="form1" method="GET" action="">
+      <td valign="top">
+         <?php include('menu.php'); ?>    </td>
+      <td valign="top" class="main"><div id="main">
+         <form id="form1" name="form1" method="GET" action="">
             <table align="center" border="0">
               <tr>
                 <td  class='style5'>Search: </td>
@@ -142,33 +140,53 @@ $offset = ($pageNum - 1) * $rowsPerPage;
 				<input type="submit" name="submit" class="style5" id="submit" value="Search" /></td>
            	  <td>			  </tr>
             </table>
-                    </form>		
+        </form>		
 	  <?php 
 if (isset($_GET['mail_id'])) {
 	$mail_id = $_GET['mail_id'];
 	$secret_id = $_GET['secret_id'];
 	$request = $_GET['request'];
-	$fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
-	if (!$fp) {
+   // 20220102 GRBOFR debug mode
+   $fp = false;
+   if( $debug == "false" ) {
+      $fp = fsockopen($amavisserver, $policy_port, $errno, $errstr, 30);
+      if (!$fp) {
    		echo "$errstr ($errno)<br />\n";
-	} else {
-   		$out = "request=" . $request . "\r\n";
+      }
+   }
+	if( $debug == "true" or $fp ) {
+      $out = "request=" . $request . "\r\n";
 		$out .= "mail_id=" . $mail_id . "\r\n";
 		$out .= "secret_id=" . $secret_id . "\r\n\r\n";
-		fwrite($fp, $out);
-   
-		fclose($fp);
+      
+      if($debug == "false" ) {
+         fwrite($fp, $out);
+         fclose($fp);
+      }
+      
 		if ($request == "release") {
-			$query = "UPDATE msgrcpt set rs = 'R' WHERE mail_id = \"$mail_id\"";
+			$query = "UPDATE msgrcpt set rs = 'R' WHERE mail_id = ? ";
 		} elseif ($request == "delete") {
-			$query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = \"$mail_id\"";
+			$query = "UPDATE msgrcpt set rs = 'D' WHERE mail_id = ? ";
 		}
 		if ($dbconfig == "mysqli") {
+         $mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+         if( $stmt = $mysqli->prepare($query) ) {
+            $stmt->bind_param("s", $mail_id);
+            if( ! $stmt->execute() ) {
+               $error = $mysqli->error;
+            }
+            $row_affected = $mysqli->affected_rows;
+            $mysqli->close();
+         }
+         
+         /*
 			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
 			if ($results = $mysqli->query($query)) {
 				$row_affected = $mysqli->affected_rows;
 				$mysqli->close();
 			}
+         */
 		} else { 
          die("Configuration error");
 		}
