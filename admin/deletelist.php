@@ -1,4 +1,5 @@
 <?php
+// 20220308 GRBOFR use bind parameters
 
 require_once("../config/config.php");
 require '../check_login.php';
@@ -20,20 +21,37 @@ if (isset($_POST['Cancel'])) {
 if (isset($_POST['deletelist'])) {
 	$rid = $_GET['rid'];
 	$sid = $_GET['sid'];
-	$query = "DELETE FROM wblist WHERE rid = '$rid' and sid = '$sid' LIMIT 1";
+	//$query = "DELETE FROM wblist WHERE rid = '$rid' and sid = '$sid' LIMIT 1";
+   $query = "DELETE FROM wblist WHERE rid = ? and sid = ? LIMIT 1";
 	if ($dbconfig == "mysqli") {
 		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-		$results = $mysqli->query($query);
-		$rows_affected = $mysqli->affected_rows;
-		if ($rows_affected == 1) { 
-			$url = $siteurl . "/admin/whitelist.php";
-			header('Location:'. $url);
-		} else {
-			echo "There was a problem removing listed recorded, please try again:<br>" . $mysqli->error . "<br>Query: " . $query;
-		}
-	} else { 
+      if( $mysqli->connect_errno ) {
+         $error = $mysqli->connect_error;
+         echo "There was an error :<br>" . $error . "<br>Query: " . $query;
+      } else {
+         if( $stmt = $mysqli->prepare($query) ) {
+            $stmt->bind_param("ss", $rid, $sid);
+            if( ! $stmt->execute() ) {
+               $error = $mysqli->error;
+            } else {
+               $row_affected = $mysqli->affected_rows;
+               $mysqli->close();            
+            }
+         }            
+         //$results = $mysqli->query($query);
+         //$rows_affected = $mysqli->affected_rows;
+         echo "$$ $row_affected";
+         if ($row_affected == 1) { 
+            $url = $siteurl . "/admin/whitelist.php";
+            header('Location:'. $url);
+         } else {
+            
+            echo "There was a problem removing listed recorded, please try again:<br>";
+         }
+      }
+   } else { 
       die("Configuration error");
-	}
+   }
 }
 
 ?>
@@ -80,9 +98,34 @@ if (isset($_POST['deletelist'])) {
 $sender = $_GET['sid'];
 $recipient = $_GET['rid'];
 $wb = $_GET['wb'];
-$wb_query = $wb_query . " WHERE wblist.rid = '$recipient' and wblist.sid = '$sender' and wblist.wb = '$wb'";
+$trouve = false;
+//$wb_query = $wb_query . " WHERE wblist.rid = '$recipient' and wblist.sid = '$sender' and wblist.wb = '$wb'";
+$wb_query = $wb_query . " WHERE wblist.rid = ? and wblist.sid = ? and wblist.wb = ? ";
 if ($dbconfig == "mysqli") {
 	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+   if( $mysqli->connect_errno ) {
+      $error = $mysqli->connect_error;
+      echo "There was an error :<br>" . $error;
+   } else {
+      if( $stmt = $mysqli->prepare($wb_query) ) {
+         $stmt->bind_param("sss", $recipient, $sender, $wb );
+
+         $stmt->execute();
+         if ($results = $stmt->get_result()) {
+             while ($row = $results->fetch_assoc()) {
+               echo "Sender = " . $row["sender"] . "<br>Recipient: " . $row["recipient"] . "<br>Listed as: " . $row["wb"];
+               $trouve = true;
+            }
+         }
+         if( ! $trouve ) {
+            echo "<tr class='text'><td colspan='3'><center>Nothing Selected</center></td></tr>";
+         }    
+         $mysqli->close();
+      } else {
+         echo "There was a problem " . $mysqli->error;
+      }
+   }
+/*   
 	if ($results=$mysqli->query($wb_query)) {
   		$rows_affected = $results->num_rows;
 			if ($rows_affected > 0) {
@@ -93,6 +136,7 @@ if ($dbconfig == "mysqli") {
 				echo "<tr class='text'><td colspan='3'><center>Nothing Selected</center></td></tr>";
 			}
 	}
+*/
 } else {
    die("Configuration error");
 }
