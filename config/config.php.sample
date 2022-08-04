@@ -7,6 +7,9 @@
 
 require_once("queries.php");
 
+// 220803 GRBOFR activation exception mysqli
+mysqli_report(MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT);
+
 // Database Information 
 
 $siteurl = "https://domain.tld/"; //Site URL, include the trailing /
@@ -36,7 +39,7 @@ $dbpass = 'postfix';     // Password that has access to your Postfix Database
 // 0 = /domain/user@domain   
 // 1 = /domain/user
 
-$postfixdatabase = 'postfix'; // Postfix Database
+$postfixdatabase = 'amavisd'; // Postfix Database
 $authentdatabase = "vmail"; // for user authentification
 
 $maildir_style = 0; 

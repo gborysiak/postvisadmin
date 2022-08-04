@@ -243,52 +243,51 @@ class DomainInfo
 	function getdomaininfo($domain)
 	{
 		include("config/config.php");
-      error_log("** getdomaininfo " . $domain);
+		error_log("** getdomaininfo " . $domain);
 		$this->domain=$domain;
-      //echo $domain;
+		//echo $domain;
 		$domainquery="SELECT * FROM domain WHERE domain= ?";
 		$userscountquery = "SELECT count(domain) as cnt FROM mailbox WHERE domain= ?";
 		//$aliascountquery = "SELECT count(domain) as cnt FROM alias WHERE domain= ? AND address != goto";
 		$aliascountquery = "SELECT count(domain) as cnt FROM alias WHERE domain= ?";
       
 		if ($dbconfig == "mysqli") {
-         error_log("** 1");
+			error_log("** 1");
 			$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $authentdatabase);	
-         if( $stmt = $mysqli->prepare($domainquery) ) {
-            $stmt->bind_param("s", $this->domain);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row_domaininfo = $result->fetch_assoc();
-            $numrows = $result->num_rows;
-         } else {
-            error_log("** errdomain1 " . $mysqli->error);
-            die( $mysqli->error);
-         }            
-         error_log("** 2");
-         if( $stmt = $mysqli->prepare($userscountquery) ) {
-            $stmt->bind_param("s", $this->domain);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row_accounts = $result->fetch_assoc();
-            $numrows = $result->num_rows;
-         } else {
-            error_log("** errdomain1 " . $mysqli->error);
-            die( $mysqli->error);
-         }                
-         error_log("** 3");
-         if( $stmt = $mysqli->prepare($aliascountquery) ) {
-            $stmt->bind_param("s", $this->domain);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row_aliases = $result->fetch_assoc();
-            $numrows = $result->num_rows;
-         } else {
-            error_log("** errdomain1 " . $mysqli->error);
-            die( $mysqli->error);
-         }    
-         
+			if( $stmt = $mysqli->prepare($domainquery) ) {
+				$stmt->bind_param("s", $this->domain);
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$row_domaininfo = $result->fetch_assoc();
+				$numrows = $result->num_rows;
+			} else {
+				error_log("** errdomain1 " . $mysqli->error);
+				die( $mysqli->error);
+			}            
+			error_log("** 2");
+			if( $stmt = $mysqli->prepare($userscountquery) ) {
+				$stmt->bind_param("s", $this->domain);
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$row_accounts = $result->fetch_assoc();
+				$numrows = $result->num_rows;
+			} else {
+				error_log("** errdomain1 " . $mysqli->error);
+				die( $mysqli->error);
+			}                
+			error_log("** 3");
+			if( $stmt = $mysqli->prepare($aliascountquery) ) {
+				$stmt->bind_param("s", $this->domain);
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$row_aliases = $result->fetch_assoc();
+				$numrows = $result->num_rows;
+			} else {
+				error_log("** errdomain1 " . $mysqli->error);
+				die( $mysqli->error);
+			}    
 		} else { 
-         die("erreur de configuration");  
+			die("erreur de configuration");  
 		}
 			
 		error_log("** 4");
@@ -504,48 +503,64 @@ function deldomain($domain) {
 
 function addlist($recipient,$sender,$wb) {
 	include("config/config.php");
-	$senderquery = "SELECT * FROM mailaddr where email = '$sender'";
-	if ($dbconfig == "mysqli") {
-		$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
-		$result = $mysqli->query($senderquery);
-		$num_rows = $result->num_rows;
-		
-	} else {
-		$link = mysql_connect($dbhost, $dbuser, $dbpass) or die('Could not connect: ' . mysql_error());
-		mysql_select_db($postfixdatabase) or die('Could not select database');	
-		$result = mysql_query($senderquery);
-		$num_rows = mysql_num_rows($result);
-		
-	}
+	//$senderquery = "SELECT * FROM mailaddr where email = '$sender'";
 	
-	if ($num_rows == 0) {
-		$senderinsert = "INSERT INTO mailaddr(priority, email) VALUES('9','$sender')";
-		$senderfind = "SELECT * FROM mailaddr WHERE email ='$sender'";
-		if ($dbconfig == "mysqli") {
-			$result = $mysqli->query($senderinsert);
-			$result = $mysqli->query($senderfind);
-			$row = $result->fetch_array(MYSQLI_ASSOC);
-			$sender_id = $row['id'];
-			$listinsert = "INSERT INTO wblist(rid, sid, wb) VALUES('$recipient','$sender_id','$wb')";
-			if ($result = $mysqli->query($listinsert)) {
-				$status = "<img src='$siteurl/images/ok.png' /></td><td>Listing Add Successfully";
+	$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $postfixdatabase);
+	$senderquery = "SELECT * FROM mailaddr where email = ?";
+	if( $stmt = $mysqli->prepare($senderquery) ) {
+		$stmt->bind_param("s", $sender);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row = $result->fetch_assoc();
+		$num_rows = $result->num_rows;
+
+		//$result = $mysqli->query($senderquery);
+		//$num_rows = $result->num_rows;
+	
+	
+		if ($num_rows == 0) {
+			//$senderinsert = "INSERT INTO mailaddr(priority, email) VALUES('9','$sender')";
+			//$senderfind = "SELECT * FROM mailaddr WHERE email ='$sender'";
+			$senderinsert = "INSERT INTO mailaddr(priority, email) VALUES('9',?)";
+
+			//$result = $mysqli->query($senderinsert);
+			if( $stmt = $mysqli->prepare($senderinsert) ) {
+				$stmt->bind_param("s", $sender);
+				$stmt->execute();
+				$last_id = $mysqli->insert_id;
+				echo "** addlist last_id : $last_id";
+				
+				//$result = $mysqli->query($senderfind);
+				//$row = $result->fetch_array(MYSQLI_ASSOC);
+				//$sender_id = $row['id'];
+			
+				//$listinsert = "INSERT INTO wblist(rid, sid, wb) VALUES('$recipient','$sender_id','$wb')";
+				$listinsert = "INSERT INTO wblist(rid, sid, wb) VALUES(?, ?, ?)";
+				if( $stmt = $mysqli->prepare($listinsert) ) {
+					$stmt->bind_param("sis", $recipient, $last_id, $wb);
+					$stmt->execute();
+					$status = "<img src='$siteurl/images/ok.png' /></td><td>Listing Add Successfully";
+				} else {
+					error_log("** addlist error " . $mysqli->error);
+					$status = "Error: " . $mysqli->error;
+				} 
+				//if ($result = $mysqli->query($listinsert)) {
+				//$status = "<img src='$siteurl/images/ok.png' /></td><td>Listing Add Successfully";
 			} else {
 				$status = "Error: " . $mysqli->error;
 			}
+
 		} else {
-			$result = mysql_query($senderinsert);
-			$result = mysql_query($senderquery);
-			$row = mysql_fetch_array($result, MYSQL_ASSOC);
-			$sender_id = $row['id'];
-			$listinsert = "INSERT INTO wblist(rid, sid, wb) VALUES('$recipient','$sender_id','$wb')";
-			if ($result = mysql_query($listinsert)) {
+			$listinsert = "INSERT INTO wblist(rid, sid, wb) VALUES(?, ?, ?)";
+			if( $stmt = $mysqli->prepare($listinsert) ) {
+				$stmt->bind_param("sis", $recipient, $row['id'], $wb);
+				$stmt->execute();
 				$status = "<img src='$siteurl/images/ok.png' /></td><td>Listing Add Successfully";
-			} else { 
-				$status = "Error: " . mysql_error($link);
-			}
-		}
-	} else {
-		if ($dbconfig == "mysqli") {
+			} else {
+				error_log("** addlist error " . $mysqli->error);
+				$status = "Error: " . $mysqli->error;
+			} 
+			/*
 			$result = $mysqli->query($senderquery);
 			$row = $result->fetch_array(MYSQLI_ASSOC);
 			$sender_id = $row['id'];
@@ -555,18 +570,11 @@ function addlist($recipient,$sender,$wb) {
 			} else {
 				$status = "Error: " . $mysqli->error;
 			}
-		} else {
-			$result = mysql_query($senderquery);
-			$row = mysql_fetch_array($result, MYSQL_ASSOC);
-			$sender_id = $row['id'];
-			$listinsert = "INSERT INTO wblist(rid, sid, wb) VALUES('$recipient','$sender_id','$wb')";
-			if ($result = mysql_query($listinsert)) {
-				$status = "<img src='$siteurl/images/ok.png' /></td><td>Listing Add Successfully";
-			} else { 
-				$status = "Error: " . mysql_error($link);
-			}
+			*/
 		}
-	}	
+	}  else {
+		$status = "Error: " . $mysqli->error;
+	}
 	return $status;
 }
 
